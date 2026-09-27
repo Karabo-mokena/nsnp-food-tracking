@@ -1,0 +1,862 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Issue Reports</title>
+
+    <link rel="stylesheet" href="{% static 'css/report_issue.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <div class="nav-container">
+
+        <a href="{% if user.role == 'school_staff' %}{% url 'school_staff' %}{% elif user.role == 'programme_manager' or user.role == 'manager' %}{% url 'manager_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="brand">
+
+            <div class="brand-logo">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="brand-text">
+                <strong>NSNP</strong>
+                <span>Food Tracker</span>
+            </div>
+
+        </a>
+
+       <nav class="main-nav">
+
+    {% if user.role == 'programme_manager' or user.role == 'manager' %}
+
+        <a href="{% url 'manager_dashboard' %}" class="nav-item">
+            <i class="bi bi-grid"></i>
+            <span>Overview</span>
+        </a>
+
+        <a href="{% url 'create_delivery' %}" class="nav-item">
+            <i class="bi bi-plus-circle"></i>
+            <span>New Delivery</span>
+        </a>
+
+        <a href="{% url 'inventory' %}" class="nav-item">
+            <i class="bi bi-box-seam"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="{% url 'report_issue' %}" class="nav-item active">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Issues</span>
+        </a>
+
+        <a href="{% url 'reports' %}" class="nav-item">
+            <i class="bi bi-bar-chart"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="{% url 'notification' %}" class="nav-item notification-nav">
+            <i class="bi bi-bell"></i>
+            <span>Alerts</span>
+            {% if unread_notifications %}
+                <span class="notification-count">{{ unread_notifications }}</span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'user_management' %}" class="nav-item">
+            <i class="bi bi-people"></i>
+            <span>Users</span>
+        </a>
+
+    {% elif user.role == 'school_staff' %}
+
+        <a href="{% url 'school_staff' %}" class="nav-item">
+            <i class="bi bi-grid"></i>
+            <span>Overview</span>
+        </a>
+
+        <a href="{% url 'inventory' %}" class="nav-item">
+            <i class="bi bi-box-seam"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="{% url 'report_issue' %}" class="nav-item active">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Issues</span>
+        </a>
+
+        <a href="{% url 'reports' %}" class="nav-item">
+            <i class="bi bi-bar-chart"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="{% url 'notification' %}" class="nav-item notification-nav">
+            <i class="bi bi-bell"></i>
+            <span>Alerts</span>
+            {% if unread_notifications %}
+                <span class="notification-count">{{ unread_notifications }}</span>
+            {% endif %}
+        </a>
+
+    {% else %}
+
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="bi bi-grid"></i>
+            <span>Overview</span>
+        </a>
+
+        <a href="{% url 'report_issue' %}" class="nav-item active">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Issues</span>
+        </a>
+
+        <a href="{% url 'notification' %}" class="nav-item notification-nav">
+            <i class="bi bi-bell"></i>
+            <span>Alerts</span>
+            {% if unread_notifications %}
+                <span class="notification-count">{{ unread_notifications }}</span>
+            {% endif %}
+        </a>
+
+    {% endif %}
+
+</nav>
+
+        <div class="header-actions">
+
+            <a href="{% url 'notification' %}" class="header-bell">
+                <i class="bi bi-bell"></i>
+                {% if unread_notifications %}
+                    <span class="bell-dot"></span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'logout' %}" class="header-logout" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+
+            <div class="profile-menu">
+
+                <div class="profile-circle">
+                    {{ user.full_name|slice:":2"|upper }}
+                </div>
+
+                <div class="profile-name">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>
+                        {% if user.role == 'driver' or user.role == 'delivery_driver' %}
+                            Delivery Driver
+                        {% elif user.role == 'school_staff' %}
+                            School Staff
+                        {% elif user.role == 'programme_manager' or user.role == 'manager' %}
+                            Programme Manager
+                        {% else %}
+                            {{ user.role|title }}
+                        {% endif %}
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<main class="page">
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-label">
+                ISSUE TRACKING
+            </span>
+
+            <h1>
+                Report an Issue
+            </h1>
+
+            <p>
+                Submit and track programme issues
+            </p>
+
+        </div>
+
+        <div class="open-issues-badge">
+
+            <i class="bi bi-flag"></i>
+
+            <strong>
+                {{ pending_issues }} open issues
+            </strong>
+
+        </div>
+
+    </section>
+
+    <section class="summary">
+
+        <div class="summary-card blue">
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ total_issues }}
+                </strong>
+
+                <span>
+                    Total Issues
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="summary-card orange">
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ in_progress_issues }}
+                </strong>
+
+                <span>
+                    In Review
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="summary-card green">
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ resolved_issues }}
+                </strong>
+
+                <span>
+                    Resolved
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="issues-layout">
+
+        <div class="report-panel">
+
+            <div class="panel-heading">
+
+                <h2>
+                    Submit New Issue
+                </h2>
+
+                <p>
+                    All issues are logged with a reference number
+                </p>
+
+            </div>
+
+            {% if error %}
+
+                <div class="error-message">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    <span>
+                        {{ error }}
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                    <label for="issue_type">
+                        Issue Type <span>*</span>
+                    </label>
+
+                    <select id="issue_type"
+                            name="issue_type"
+                            required>
+
+                        <option value="">
+                            Select type...
+                        </option>
+
+                        <option value="Delayed Delivery">
+                            Delayed Delivery
+                        </option>
+
+                        <option value="Damaged Packaging">
+                            Damaged Packaging
+                        </option>
+
+                        <option value="Incorrect Quantity">
+                            Incorrect Quantity
+                        </option>
+
+                        <option value="Quality / Food Safety Concern">
+                            Quality / Food Safety Concern
+                        </option>
+
+                        <option value="Missing Items">
+                            Missing Items
+                        </option>
+
+                        <option value="Possible Contamination">
+                            Possible Contamination
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="delivery">
+                        Delivery <span>*</span>
+                    </label>
+
+                    <select id="delivery"
+                            name="delivery"
+                            required>
+
+                        <option value="">
+                            Select delivery...
+                        </option>
+
+                        {% for delivery in deliveries %}
+
+                            <option value="{{ delivery.id }}">
+
+                                {{ delivery.school }} -
+                                {{ delivery.food_item }} -
+                                {{ delivery.delivery_date|date:"d M Y" }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Priority <span>*</span>
+                    </label>
+
+                    <div class="priority-buttons">
+
+                        <button type="button"
+                                class="priority-button low"
+                                data-priority="Low">
+
+                            Low
+
+                        </button>
+
+                        <button type="button"
+                                class="priority-button medium selected"
+                                data-priority="Medium">
+
+                            Medium
+
+                        </button>
+
+                        <button type="button"
+                                class="priority-button high"
+                                data-priority="High">
+
+                            High
+
+                        </button>
+
+                    </div>
+
+                    <input type="hidden"
+                           name="priority"
+                           id="priority"
+                           value="Medium">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description <span>*</span>
+                    </label>
+
+                    <textarea id="description"
+                              name="description"
+                              rows="5"
+                              placeholder="Describe the issue in detail..."
+                              required></textarea>
+
+                </div>
+
+                <div class="attachment-box">
+
+                    <input type="file"
+                           id="picture"
+                           name="picture"
+                           accept=".png,.jpg,.jpeg,.pdf"
+                           hidden>
+
+                    <label for="picture"
+                           class="attachment-label">
+
+                        <i class="bi bi-paperclip"></i>
+
+                        <strong id="file-name">
+                            Attach photo or document
+                        </strong>
+
+                        <span>
+                            PNG, JPG, JPEG, PDF — max 10 MB
+                        </span>
+
+                    </label>
+
+                </div>
+
+                <button type="submit"
+                        class="submit-button">
+
+                    <i class="bi bi-send"></i>
+
+                    Submit Issue
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="tracker-panel">
+
+            <div class="panel-heading">
+
+                <h2>
+                    Recent Issues
+                </h2>
+
+                <p>
+                    Submit and track programme issues
+                </p>
+
+            </div>
+
+            <div class="issue-list">
+
+                {% for issue in issues|slice:":3" %}
+
+                    <div class="issue-item">
+
+                        <div class="issue-top">
+
+                            <div class="issue-title">
+
+                                <div>
+
+                                    <div class="issue-meta">
+
+                                        <span class="reference">
+                                            {{ issue.display_id }}
+                                        </span>
+
+                                        <span class="priority-tag {{ issue.priority|lower }}">
+                                            {{ issue.priority }}
+                                        </span>
+
+                                        <span class="status-tag {{ issue.status_class }}">
+                                            {{ issue.display_status }}
+                                        </span>
+
+                                    </div>
+
+                                    <h3>
+                                        {{ issue.issue_type }}
+                                    </h3>
+
+                                    <p>
+                                        {{ issue.delivery.school }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <span class="issue-date">
+
+                                <i class="bi bi-clock"></i>
+
+                                {{ issue.created_at|date:"d M Y" }}
+
+                            </span>
+
+                        </div>
+
+                        <p class="issue-description">
+                            {{ issue.description }}
+                        </p>
+
+                        {% if issue.picture %}
+
+                            <div class="issue-attachment">
+
+                                <i class="bi bi-paperclip"></i>
+
+                                <a href="{{ issue.picture.url }}"
+                                   target="_blank">
+
+                                    View attachment
+
+                                </a>
+
+                            </div>
+
+                        {% endif %}
+
+                        {% if issue.display_status == 'Resolved' %}
+
+                            <div class="resolved-message">
+
+                                <i class="bi bi-check-circle"></i>
+
+                                Resolved
+
+                            </div>
+
+                        {% elif issue.display_status == 'In Progress' %}
+
+                            <div class="progress-message">
+
+                                Issue is currently being investigated.
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="pending-message">
+
+                                Awaiting action from the responsible team.
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty-state">
+
+                        <i class="bi bi-inbox"></i>
+
+                        <strong>
+                            No issues reported
+                        </strong>
+
+                        <span>
+                            Reported issues will appear here.
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="all-issues-panel">
+
+        <div class="table-heading">
+
+            <div>
+
+                <h2>
+                    All Reported Issues
+                </h2>
+
+                <p>
+                    Complete issue reporting log
+                </p>
+
+            </div>
+
+            <a href="{% url 'reports' %}"
+               class="view-button">
+
+                View Reports
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Ref.
+                        </th>
+
+                        <th>
+                            Issue
+                        </th>
+
+                        <th>
+                            School
+                        </th>
+
+                        <th>
+                            Priority
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Reported By
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Attachment
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for issue in issues %}
+
+                        <tr>
+
+                            <td>
+                                <span class="reference">
+                                    {{ issue.display_id }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    {{ issue.issue_type }}
+                                </strong>
+
+                                <span class="description-preview">
+                                    {{ issue.description|truncatechars:55 }}
+                                </span>
+
+                            </td>
+
+                            <td>
+                                {{ issue.delivery.school }}
+                            </td>
+
+                            <td>
+
+                                <span class="priority-tag {{ issue.priority|lower }}">
+                                    {{ issue.priority }}
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                {% if user.role == 'programme_manager' or user.role == 'manager' %}
+
+                                    <form method="POST"
+                                          action="{% url 'update_issue_status' issue.id %}"
+                                          class="status-update-form">
+
+                                        {% csrf_token %}
+
+                                        <select name="status"
+                                                class="status-select {{ issue.status_class }}"
+                                                onchange="this.form.submit();">
+
+                                            <option value="Open" {% if issue.status == 'Open' %}selected{% endif %}>
+                                                Open
+                                            </option>
+
+                                            <option value="In Progress" {% if issue.status == 'In Progress' %}selected{% endif %}>
+                                                In Progress
+                                            </option>
+
+                                            <option value="Resolved" {% if issue.status == 'Resolved' %}selected{% endif %}>
+                                                Resolved
+                                            </option>
+
+                                        </select>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <span class="status-tag {{ issue.status_class }}">
+
+                                        {% if issue.status == 'Resolved' %}
+                                            <i class="bi bi-check-circle"></i>
+                                            Resolved
+                                        {% elif issue.status == 'In Progress' %}
+                                            <i class="bi bi-clock"></i>
+                                            In Progress
+                                        {% else %}
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            Pending
+                                        {% endif %}
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ issue.reported_by.full_name }}
+                            </td>
+
+                            <td>
+                                {{ issue.created_at|date:"d M Y" }}
+                            </td>
+
+                            <td>
+
+                                {% if issue.picture %}
+
+                                    <a href="{{ issue.picture.url }}"
+                                       target="_blank"
+                                       class="attachment-link">
+
+                                        <i class="bi bi-paperclip"></i>
+                                        View
+
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="no-attachment">
+                                        None
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="no-records">
+
+                                No issues have been reported yet.
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+const priorityButtons = document.querySelectorAll('.priority-button');
+
+const priorityInput = document.getElementById('priority');
+
+priorityButtons.forEach(function(button) {
+
+    button.addEventListener('click', function() {
+
+        priorityButtons.forEach(function(item) {
+            item.classList.remove('selected');
+        });
+
+        button.classList.add('selected');
+
+        priorityInput.value = button.getAttribute('data-priority');
+
+    });
+
+});
+
+const pictureInput = document.getElementById('picture');
+
+const fileName = document.getElementById('file-name');
+
+pictureInput.addEventListener('change', function() {
+
+    if (pictureInput.files.length > 0) {
+
+        fileName.textContent = pictureInput.files[0].name;
+
+    } else {
+
+        fileName.textContent = 'Attach photo or document';
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>

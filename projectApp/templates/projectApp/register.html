@@ -1,0 +1,475 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NSNP Registration</title>
+
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+<body>
+
+<div class="register-page">
+
+    <div class="register-image-panel">
+
+        <div class="register-image-overlay"></div>
+
+        <div class="register-brand">
+
+            <div class="register-brand-icon">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="register-brand-text">
+                <strong>NSNP Portal</strong>
+                <span>Request Access</span>
+            </div>
+
+        </div>
+
+        <div class="register-image-content">
+
+            <div class="register-image-label">
+                NATIONAL SCHOOL NUTRITION PROGRAMME
+            </div>
+
+            <h1>
+                Join the NSNP<br>
+                network
+            </h1>
+
+            <p>
+                Get access to the National School Nutrition Programme
+                management system and help ensure every child is fed.
+            </p>
+
+            <div class="register-location">
+                <i class="bi bi-geo-alt"></i>
+                <span>South Africa</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="register-form-panel">
+
+        <div class="register-form-container">
+
+            <div class="back-link">
+
+                <a href="{% url 'login' %}">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back to sign in</span>
+                </a>
+
+            </div>
+
+
+            <div class="register-heading">
+
+                <h1>Request system access</h1>
+
+                <p>
+                    Fill in your details and an admin will approve your account.
+                </p>
+
+            </div>
+
+
+            {% if error %}
+
+            <div class="error">
+
+                <i class="bi bi-exclamation-circle"></i>
+
+                <span>{{ error }}</span>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if success %}
+
+            <div class="success">
+
+                <i class="bi bi-check-circle"></i>
+
+                <span>{{ success }}</span>
+
+            </div>
+
+            {% endif %}
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <div class="form-section">
+
+                    <label class="section-label">
+                        Your role <span>*</span>
+                    </label>
+
+
+                    <div class="role-grid">
+
+
+                        <label class="role-option">
+
+                            <input
+                                type="radio"
+                                name="role"
+                                value="delivery_driver"
+                                required
+                            >
+
+                            <div class="role-card">
+
+                                <div class="role-icon">
+                                    <i class="bi bi-truck"></i>
+                                </div>
+
+                                <div class="role-content">
+
+                                    <h3>Delivery Driver</h3>
+
+                                    <p>
+                                        Log daily deliveries and route completions
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </label>
+
+
+                        <label class="role-option">
+
+                            <input
+                                type="radio"
+                                name="role"
+                                value="school_staff"
+                                required
+                            >
+
+                            <div class="role-card">
+
+                                <div class="role-icon">
+                                    <i class="bi bi-building"></i>
+                                </div>
+
+                                <div class="role-content">
+
+                                    <h3>School Staff</h3>
+
+                                    <p>
+                                        Confirm receipts and manage school inventory
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </label>
+
+
+                        <label class="role-option">
+
+                            <input
+                                type="radio"
+                                name="role"
+                                value="programme_manager"
+                                required
+                            >
+
+                            <div class="role-card">
+
+                                <div class="role-icon">
+                                    <i class="bi bi-grid-1x2"></i>
+                                </div>
+
+                                <div class="role-content">
+
+                                    <h3>Programme Manager</h3>
+
+                                    <p>
+                                        Full system access and programme oversight
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </label>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-section">
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="fullname">
+                                Full name <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="fullname"
+                                name="fullname"
+                                placeholder="e.g. Thabo Nkosi"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="username">
+                                Username <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Choose a username"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="email">
+                                Work email <span>*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="name@nsnp.gov.za"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Mobile number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="+27 82 000 0000"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="form-row school-row"
+                        id="school-row"
+                        style="display: none;"
+                    >
+
+                        <div class="form-group">
+
+                            <label for="school">
+                                School / Institution <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="school"
+                                name="school"
+                                placeholder="e.g. Greenfield Primary School"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="password">
+                                Password <span>*</span>
+                            </label>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Minimum 8 characters"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="confirm-password">
+                                Confirm password <span>*</span>
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                name="confirm-password"
+                                placeholder="Re-enter password"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="registration-note">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    <div>
+                        <strong>Registration review</strong>
+
+                        <p>
+                            Your registration request will be reviewed by a
+                            programme manager before you can access the system.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="register-button">
+
+                    <span>Submit Registration Request</span>
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </button>
+
+
+            </form>
+
+
+            <div class="login-link">
+
+                <span>Already have an account?</span>
+
+                <a href="{% url 'login' %}">
+                    Sign in here
+                </a>
+
+            </div>
+
+
+            <div class="register-footer">
+
+                <span>National School Nutrition Programme</span>
+
+                <span>South Africa</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const schoolRow = document.getElementById('school-row');
+    const schoolInput = document.getElementById('school');
+    const roleInputs = document.querySelectorAll('input[name="role"]');
+
+    function toggleSchoolField() {
+
+        const selected = document.querySelector(
+            'input[name="role"]:checked'
+        );
+
+        if (selected && selected.value === 'school_staff') {
+
+            schoolRow.style.display = 'grid';
+            schoolInput.required = true;
+
+        } else {
+
+            schoolRow.style.display = 'none';
+            schoolInput.required = false;
+            schoolInput.value = '';
+
+        }
+
+    }
+
+    roleInputs.forEach(function (input) {
+
+        input.addEventListener(
+            'change',
+            toggleSchoolField
+        );
+
+    });
+
+    toggleSchoolField();
+
+});
+
+</script>
+
+</body>
+
+</html>

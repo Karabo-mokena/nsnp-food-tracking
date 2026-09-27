@@ -1,0 +1,458 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Delivery | NSNP Food Tracker</title>
+
+    <link rel="stylesheet" href="{% static 'css/create_delivery.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <div class="nav-container">
+
+        <a href="{% url 'manager_dashboard' %}" class="brand">
+
+            <div class="brand-logo">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="brand-text">
+                <strong>NSNP</strong>
+                <span>Food Tracker</span>
+            </div>
+
+        </a>
+
+        <nav class="main-nav">
+
+            <a href="{% url 'manager_dashboard' %}" class="nav-item">
+                <i class="bi bi-grid"></i>
+                <span>Overview</span>
+            </a>
+
+            <a href="{% url 'create_delivery' %}" class="nav-item active">
+                <i class="bi bi-plus-circle"></i>
+                <span>New Delivery</span>
+            </a>
+
+            <a href="{% url 'inventory' %}" class="nav-item">
+                <i class="bi bi-box-seam"></i>
+                <span>Inventory</span>
+            </a>
+
+            <a href="{% url 'report_issue' %}" class="nav-item">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>Issues</span>
+            </a>
+
+            <a href="{% url 'reports' %}" class="nav-item">
+                <i class="bi bi-bar-chart"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                <i class="bi bi-bell"></i>
+                <span>Alerts</span>
+                {% if unread_count %}
+                    <span class="notification-count">{{ unread_count }}</span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'user_management' %}" class="nav-item">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a href="{% url 'notification' %}" class="header-bell">
+                <i class="bi bi-bell"></i>
+                {% if unread_count %}
+                    <span class="bell-dot"></span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'logout' %}" class="header-logout" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+
+            <div class="profile-menu">
+                <div class="profile-circle">
+                    {{ user.full_name|slice:":2"|upper }}
+                </div>
+                <div class="profile-name">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Programme Manager</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <div class="page-header">
+
+        <div>
+
+            <a href="{% url 'manager_dashboard' %}" class="back-link">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+
+            <h1>Create Delivery</h1>
+
+            <p>Assign a new food delivery to a driver.</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-card">
+
+        <div class="form-header">
+
+            <div class="form-icon">
+                <i class="bi bi-truck"></i>
+            </div>
+
+            <div>
+                <h2>Delivery Details</h2>
+                <p>Fill in the delivery information and assign it to a driver.</p>
+            </div>
+
+        </div>
+
+
+        {% if error %}
+
+            <div class="error-message">
+                <i class="bi bi-exclamation-circle"></i>
+                <span>{{ error }}</span>
+            </div>
+
+        {% endif %}
+
+
+        {% if not drivers %}
+
+            <div class="warning-message">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>
+                    No approved drivers available.
+                    Approve a driver from <a href="{% url 'user_management' %}">User Management</a> first.
+                </span>
+            </div>
+
+        {% endif %}
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- ROW 1: School + District -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="school">
+                        Destination School <span>*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-buildings"></i>
+                        <input
+                            type="text"
+                            id="school"
+                            name="school"
+                            placeholder="e.g. Greenfield Primary School"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="district">
+                        District <span>*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-geo-alt"></i>
+                        <select id="district" name="district" required>
+                            <option value="">Select district...</option>
+                            <option value="Capricorn">Capricorn</option>
+                            <option value="Waterberg">Waterberg</option>
+                            <option value="Mopani">Mopani</option>
+                            <option value="Sekhukhune">Sekhukhune</option>
+                            <option value="Vhembe">Vhembe</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ROW 2: Food Item + Quantity -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="food_item">
+                        Food Item <span>*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-box-seam"></i>
+                        <input
+                            type="text"
+                            id="food_item"
+                            name="food_item"
+                            placeholder="e.g. Rice"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">
+                        Quantity <span>*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-123"></i>
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            min="1"
+                            placeholder="e.g. 250"
+                            required
+                        >
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ROW 3: Recipient Name -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="recipient_name">
+                        Recipient Name
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-person"></i>
+                        <input
+                            type="text"
+                            id="recipient_name"
+                            name="recipient_name"
+                            placeholder="Optional"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <!-- Empty for grid spacing -->
+                </div>
+
+            </div>
+
+            <!-- ROW 4: Date + Time -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="delivery_date">
+                        Delivery Date <span>*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-calendar3"></i>
+                        <input
+                            type="date"
+                            id="delivery_date"
+                            name="delivery_date"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="delivery_time">
+                        Delivery Time
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-clock"></i>
+                        <input
+                            type="time"
+                            id="delivery_time"
+                            name="delivery_time"
+                        >
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ROW 5: Driver -->
+
+            <div class="form-group">
+                <label for="driver">
+                    Assign to Driver <span>*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="bi bi-person-badge"></i>
+                    <select id="driver" name="driver" required>
+                        <option value="">Select a driver...</option>
+                        {% for driver in drivers %}
+                            <option value="{{ driver.id }}">
+                                {{ driver.full_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Actions -->
+
+            <div class="form-actions">
+
+                <a href="{% url 'manager_dashboard' %}" class="cancel-button">
+                    Cancel
+                </a>
+
+                <button type="submit" class="save-button" {% if not drivers %}disabled{% endif %}>
+                    <i class="bi bi-check-circle"></i>
+                    Create Delivery
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <section class="recent-deliveries-panel">
+
+        <div class="panel-heading">
+
+            <div>
+                <h2>Recent Deliveries</h2>
+                <p>Last 10 deliveries created across the programme</p>
+            </div>
+
+            <span class="count-badge">
+                {{ recent_deliveries|length }} shown
+            </span>
+
+        </div>
+
+
+        {% if recent_deliveries %}
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Ref</th>
+                        <th>School</th>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Driver</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for delivery in recent_deliveries %}
+
+                    <tr>
+
+                        <td>
+                            <span class="ref-badge">
+                                DEL-{{ delivery.id|stringformat:"04d" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>{{ delivery.school }}</strong>
+                        </td>
+
+                        <td>
+                            {{ delivery.food_item }}
+                        </td>
+
+                        <td>
+                            {{ delivery.quantity }}
+                        </td>
+
+                        <td>
+                            {{ delivery.driver.full_name }}
+                        </td>
+
+                        <td>
+                            {{ delivery.delivery_date|date:"d M Y" }}
+                            {% if delivery.delivery_time %}
+                                · {{ delivery.delivery_time|time:"H:i" }}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <span class="status-pill {{ delivery.status_class }}">
+                                {{ delivery.display_status }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-deliveries">
+
+            <i class="bi bi-truck"></i>
+
+            <strong>No deliveries yet</strong>
+
+            <span>Created deliveries will appear here.</span>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

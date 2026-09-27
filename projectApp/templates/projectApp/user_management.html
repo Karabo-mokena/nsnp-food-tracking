@@ -1,0 +1,586 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Management</title>
+
+    <link rel="stylesheet" href="{% static 'css/user_management.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+<body>
+
+    <header class="top-header">
+
+    <div class="nav-container">
+
+        <a href="{% url 'manager_dashboard' %}" class="brand">
+
+            <div class="brand-logo">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="brand-text">
+                <strong>NSNP</strong>
+                <span>Food Tracker</span>
+            </div>
+
+        </a>
+
+        <nav class="main-nav">
+
+            <a href="{% url 'manager_dashboard' %}" class="nav-item">
+                <i class="bi bi-grid"></i>
+                <span>Overview</span>
+            </a>
+
+            <a href="{% url 'create_delivery' %}" class="nav-item">
+                <i class="bi bi-plus-circle"></i>
+                <span>New Delivery</span>
+            </a>
+
+            <a href="{% url 'inventory' %}" class="nav-item">
+                <i class="bi bi-box-seam"></i>
+                <span>Inventory</span>
+            </a>
+
+            <a href="{% url 'report_issue' %}" class="nav-item">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>Issues</span>
+            </a>
+
+            <a href="{% url 'reports' %}" class="nav-item">
+                <i class="bi bi-bar-chart"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                <i class="bi bi-bell"></i>
+                <span>Alerts</span>
+                {% if unread_count %}
+                    <span class="notification-count">{{ unread_count }}</span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'user_management' %}" class="nav-item active">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a href="{% url 'notification' %}" class="header-bell">
+                <i class="bi bi-bell"></i>
+                {% if unread_count %}
+                    <span class="bell-dot"></span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'logout' %}" class="header-logout" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+
+            <div class="profile-menu">
+                <div class="profile-circle">
+                    {{ user.full_name|slice:":2"|upper }}
+                </div>
+                <div class="profile-name">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Programme Manager</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<main class="page-container">
+
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <div>
+
+                <div class="hero-label">
+                    ADMINISTRATION
+                </div>
+
+                <h1>User Management</h1>
+
+                <p>
+                    {{ total_users }} accounts · Limpopo Province
+                </p>
+
+            </div>
+
+            <a href="{% url 'register' %}" class="add-user-button">
+
+                <i class="bi bi-person-plus"></i>
+
+                Add User
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card green">
+
+            <div class="stat-icon">
+                <i class="bi bi-people"></i>
+            </div>
+
+            <div class="stat-number">
+                {{ total_users }}
+            </div>
+
+            <div class="stat-label">
+                Total Users
+            </div>
+
+        </div>
+
+
+        <div class="stat-card blue">
+
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+
+            <div class="stat-number">
+                {{ approved_count }}
+            </div>
+
+            <div class="stat-label">
+                Active
+            </div>
+
+        </div>
+
+
+        <div class="stat-card teal">
+
+            <div class="stat-icon">
+                <i class="bi bi-truck"></i>
+            </div>
+
+            <div class="stat-number">
+                {{ driver_count }}
+            </div>
+
+            <div class="stat-label">
+                Drivers
+            </div>
+
+        </div>
+
+
+        <div class="stat-card orange">
+
+            <div class="stat-icon">
+                <i class="bi bi-shield"></i>
+            </div>
+
+            <div class="stat-number">
+                {{ pending_count }}
+            </div>
+
+            <div class="stat-label">
+                Pending Approval
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="users-layout">
+
+
+        <aside class="drivers-card">
+
+            <div class="section-title">
+
+                <i class="bi bi-star"></i>
+
+                <h2>Top Drivers</h2>
+
+            </div>
+
+            {% for driver in top_drivers %}
+
+    <div class="driver-item">
+
+        <div class="driver-rank">
+            #{{ forloop.counter }}
+        </div>
+
+        <div class="driver-avatar">
+            {{ driver.full_name|slice:":2"|upper }}
+        </div>
+
+        <div class="driver-info">
+
+            <strong>
+                {{ driver.full_name }}
+            </strong>
+
+            <div class="driver-progress">
+                <span></span>
+            </div>
+
+        </div>
+
+        <div class="driver-count">
+            {{ driver.delivery_count|default:"0" }}
+        </div>
+
+    </div>
+
+{% empty %}
+
+    <div class="empty-drivers">
+        No drivers registered.
+    </div>
+
+{% endfor %}
+
+           
+
+        </aside>
+
+
+        <div class="users-section">
+
+
+            <div class="search-card">
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="text"
+                        id="userSearch"
+                        placeholder="Search by name or email..."
+                    >
+
+                </div>
+
+                <select id="roleFilter">
+
+                    <option value="all">All roles</option>
+
+                    <option value="driver">
+                        Delivery Driver
+                    </option>
+
+                    <option value="school_staff">
+                        School Staff
+                    </option>
+
+                    <option value="programme_manager">
+                        Programme Manager
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="user-list" id="userList">
+
+                {% for account in users %}
+
+                    <div
+                        class="user-card"
+                        data-name="{{ account.full_name|lower }}"
+                        data-email="{{ account.email|lower }}"
+                        data-role="{{ account.role }}"
+                    >
+
+                        <div class="user-avatar">
+
+                            {{ account.full_name|slice:":2"|upper }}
+
+                        </div>
+
+
+                        <div class="user-details">
+
+                            <div class="user-name-row">
+
+                                <h3>
+                                    {{ account.full_name }}
+                                </h3>
+
+
+                                {% if account.role == 'driver' or account.role == 'delivery_driver' %}
+
+                                    <span class="role-badge driver-role">
+                                        <i class="bi bi-truck"></i>
+                                        Delivery Driver
+                                    </span>
+
+                                {% elif account.role == 'school_staff' %}
+
+                                    <span class="role-badge staff-role">
+                                        <i class="bi bi-buildings"></i>
+                                        School Staff
+                                    </span>
+
+                                {% elif account.role == 'programme_manager' or account.role == 'manager' %}
+
+                                    <span class="role-badge manager-role">
+                                        <i class="bi bi-grid"></i>
+                                        Programme Manager
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="role-badge">
+                                        {{ account.role }}
+                                    </span>
+
+                                {% endif %}
+
+
+                                {% if account.status == 'Approved' %}
+
+                                    <span class="status-badge approved">
+                                        Active
+                                    </span>
+
+                                {% elif account.status == 'Pending' %}
+
+                                    <span class="status-badge pending">
+                                        Pending
+                                    </span>
+
+                                {% elif account.status == 'Rejected' %}
+
+                                    <span class="status-badge rejected">
+                                        Rejected
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="user-meta">
+
+                                <span>
+                                    {{ account.email }}
+                                </span>
+
+                                <span>
+                                    {{ account.username }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="user-status">
+
+                                {% if account.status == 'Approved' %}
+
+                                    <span>
+                                        <i class="bi bi-check-circle"></i>
+                                        Account approved
+                                    </span>
+
+                                {% elif account.status == 'Pending' %}
+
+                                    <span>
+                                        <i class="bi bi-clock"></i>
+                                        Waiting for approval
+                                    </span>
+
+                                {% else %}
+
+                                    <span>
+                                        <i class="bi bi-x-circle"></i>
+                                        Account rejected
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        {% if account.role == 'driver' or account.role == 'delivery_driver' %}
+
+                            <div class="delivery-total">
+
+                                <strong>
+                                    {{ account.delivery_count|default:"0" }}
+                                </strong>
+
+                                <span>
+                                    deliveries
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="user-actions">
+
+    {% if account.status == 'Pending' %}
+
+        <form method="POST" action="{% url 'approve_user' account.id %}" class="action-form">
+            {% csrf_token %}
+            <button
+                type="submit"
+                class="approve-button"
+                title="Approve User"
+            >
+                <i class="bi bi-check-lg"></i>
+            </button>
+        </form>
+
+        <form method="POST" action="{% url 'reject_user' account.id %}" class="action-form">
+            {% csrf_token %}
+            <button
+                type="submit"
+                class="reject-button"
+                title="Reject User"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </form>
+
+    {% endif %}
+
+
+                       
+
+                               
+
+
+                            <a
+                                href="{% url 'edit_user' account.id %}"
+                                class="edit-button"
+                                title="Edit User"
+                            >
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <form
+    method="POST"
+    action="{% url 'delete_user' account.id %}"
+    class="action-form"
+    onsubmit="return confirm('Are you sure you want to delete this user?');"
+>
+    {% csrf_token %}
+    <button
+        type="submit"
+        class="delete-button"
+        title="Delete User"
+    >
+        <i class="bi bi-trash"></i>
+    </button>
+</form>
+  
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty-users">
+
+                        <i class="bi bi-people"></i>
+
+                        <h3>No users found</h3>
+
+                        <p>
+                            There are currently no registered users.
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+const searchInput = document.getElementById("userSearch");
+const roleFilter = document.getElementById("roleFilter");
+const userCards = document.querySelectorAll(".user-card");
+
+function filterUsers() {
+
+    const searchValue = searchInput.value.toLowerCase();
+    const roleValue = roleFilter.value;
+
+    userCards.forEach(function(card) {
+
+        const name = card.dataset.name;
+        const email = card.dataset.email;
+        const role = card.dataset.role;
+
+        const matchesSearch =
+            name.includes(searchValue) ||
+            email.includes(searchValue);
+
+        const matchesRole =
+            roleValue === "all" ||
+            role === roleValue ||
+            (roleValue === "driver" && role === "delivery_driver") ||
+            (roleValue === "programme_manager" && role === "manager");
+
+        if (matchesSearch && matchesRole) {
+            card.style.display = "flex";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+}
+
+searchInput.addEventListener("input", filterUsers);
+roleFilter.addEventListener("change", filterUsers);
+
+</script>
+
+</body>
+
+</html>

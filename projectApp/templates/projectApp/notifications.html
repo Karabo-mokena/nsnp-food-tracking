@@ -1,0 +1,442 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Alerts</title>
+
+    <link rel="stylesheet" href="{% static 'css/notifications.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<header class="top-header">
+    <div class="nav-container">
+
+        <a href="{% if user.role == 'school_staff' %}{% url 'school_staff' %}{% elif user.role == 'programme_manager' or user.role == 'manager' %}{% url 'manager_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="brand">
+
+            <div class="brand-logo">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="brand-text">
+                <strong>NSNP</strong>
+                <span>Food Tracker</span>
+            </div>
+
+        </a>
+
+        <nav class="main-nav">
+
+    {% if user.role == 'programme_manager' or user.role == 'manager' %}
+
+        <a href="{% url 'manager_dashboard' %}">
+            <i class="bi bi-grid"></i>
+            <span>Overview</span>
+        </a>
+
+        <a href="{% url 'create_delivery' %}">
+            <i class="bi bi-plus-circle"></i>
+            <span>New Delivery</span>
+        </a>
+
+        <a href="{% url 'inventory' %}">
+            <i class="bi bi-box"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="{% url 'report_issue' %}">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Issues</span>
+        </a>
+
+        <a href="{% url 'reports' %}">
+            <i class="bi bi-bar-chart"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="{% url 'notification' %}" class="active">
+            <i class="bi bi-bell"></i>
+            <span>Alerts</span>
+            {% if unread_count %}
+                <span class="nav-badge">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'user_management' %}">
+            <i class="bi bi-people"></i>
+            <span>Users</span>
+        </a>
+
+    {% elif user.role == 'school_staff' %}
+
+        <a href="{% url 'school_staff' %}">
+            <i class="bi bi-grid"></i>
+            <span>Overview</span>
+        </a>
+
+        <a href="{% url 'inventory' %}">
+            <i class="bi bi-box"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="{% url 'report_issue' %}">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Issues</span>
+        </a>
+
+        <a href="{% url 'reports' %}">
+            <i class="bi bi-bar-chart"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="{% url 'notification' %}" class="active">
+            <i class="bi bi-bell"></i>
+            <span>Alerts</span>
+            {% if unread_count %}
+                <span class="nav-badge">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+
+    {% else %}
+
+        <a href="{% url 'dashboard' %}">
+            <i class="bi bi-grid"></i>
+            <span>Overview</span>
+        </a>
+
+        <a href="{% url 'report_issue' %}">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Issues</span>
+        </a>
+
+        <a href="{% url 'notification' %}" class="active">
+            <i class="bi bi-bell"></i>
+            <span>Alerts</span>
+            {% if unread_count %}
+                <span class="nav-badge">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+
+    {% endif %}
+
+</nav>
+
+        <div class="header-actions">
+
+    <a href="{% url 'notification' %}" class="header-bell">
+        <i class="bi bi-bell"></i>
+        {% if unread_count %}
+            <span class="bell-dot"></span>
+        {% endif %}
+    </a>
+
+    <a href="{% url 'logout' %}" class="header-logout" title="Sign Out">
+        <i class="bi bi-box-arrow-right"></i>
+    </a>
+
+    <div class="profile-menu">
+        <div class="profile-circle">
+            {{ user.full_name|slice:":2"|upper }}
+        </div>
+        <div class="profile-name">
+            <strong>{{ user.full_name }}</strong>
+            <span>
+                {% if user.role == 'driver' or user.role == 'delivery_driver' %}
+                    Delivery Driver
+                {% elif user.role == 'school_staff' %}
+                    School Staff
+                {% elif user.role == 'programme_manager' or user.role == 'manager' %}
+                    Programme Manager
+                {% else %}
+                    {{ user.role|title }}
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+</div>
+
+</header>
+
+
+<main class="page-container">
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <div>
+                <span class="hero-label">SYSTEM ALERTS</span>
+                <h1>Alerts & Notifications</h1>
+                <p>Monitor important programme updates and system alerts</p>
+            </div>
+
+            <div class="hero-alert">
+                <i class="bi bi-bell"></i>
+                <span>{{ unread_count|default:"0" }} unread alerts</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="summary-grid">
+
+        <div class="summary-card green">
+            <div class="summary-icon"><i class="bi bi-bell"></i></div>
+            <div class="summary-number">{{ notifications|length }}</div>
+            <div class="summary-title">Total Alerts</div>
+        </div>
+
+        <div class="summary-card blue">
+            <div class="summary-icon"><i class="bi bi-envelope"></i></div>
+            <div class="summary-number">{{ unread_count|default:"0" }}</div>
+            <div class="summary-title">Unread</div>
+        </div>
+
+        <div class="summary-card orange">
+            <div class="summary-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="summary-number">{{ issue_alert_count|default:"0" }}</div>
+            <div class="summary-title">Issue Alerts</div>
+        </div>
+
+        <div class="summary-card purple">
+            <div class="summary-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="summary-number">{{ stock_alert_count|default:"0" }}</div>
+            <div class="summary-title">Stock Alerts</div>
+        </div>
+
+    </section>
+
+
+    <section class="content-grid">
+
+        <div class="alerts-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h2>Recent Alerts</h2>
+                    <p>Latest notifications from the programme</p>
+                </div>
+
+                <div class="panel-actions">
+
+                    <span class="alert-count">
+                        {{ unread_count|default:"0" }} unread
+                    </span>
+
+                    {% if unread_count > 0 %}
+                        <form method="POST" class="inline-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="mark_all_read">
+                            <button type="submit" class="action-button">
+                                <i class="bi bi-check2-all"></i>
+                                Mark all read
+                            </button>
+                        </form>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="alerts-list">
+
+                {% for notification in notifications %}
+
+                    <div class="alert-item {% if not notification.is_read %}unread{% endif %}">
+
+                        <div class="alert-icon
+                            {% if notification.notification_type == 'issue' %}
+                                issue
+                            {% elif notification.notification_type == 'alert' or notification.notification_type == 'expiry' %}
+                                stock
+                            {% elif notification.notification_type == 'delivery' %}
+                                delivery
+                            {% elif notification.notification_type == 'resolved' %}
+                                resolved
+                            {% else %}
+                                general
+                            {% endif %}">
+
+                            {% if notification.notification_type == 'issue' %}
+                                <i class="bi bi-exclamation-triangle"></i>
+                            {% elif notification.notification_type == 'alert' or notification.notification_type == 'expiry' %}
+                                <i class="bi bi-box-seam"></i>
+                            {% elif notification.notification_type == 'delivery' %}
+                                <i class="bi bi-truck"></i>
+                            {% elif notification.notification_type == 'resolved' %}
+                                <i class="bi bi-check-circle"></i>
+                            {% else %}
+                                <i class="bi bi-bell"></i>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="alert-content">
+
+                            <div class="alert-top">
+
+                                <h3>
+                                    {% if notification.notification_type == 'issue' %}
+                                        Issue Alert
+                                    {% elif notification.notification_type == 'alert' or notification.notification_type == 'expiry' %}
+                                        Inventory Alert
+                                    {% elif notification.notification_type == 'delivery' %}
+                                        Delivery Alert
+                                    {% elif notification.notification_type == 'resolved' %}
+                                        Issue Resolved
+                                    {% else %}
+                                        Programme Notification
+                                    {% endif %}
+                                </h3>
+
+                                {% if not notification.is_read %}
+                                    <span class="unread-label">New</span>
+                                {% endif %}
+
+                            </div>
+
+                            <p>{{ notification.message }}</p>
+
+                            <span class="alert-date">
+                                <i class="bi bi-clock"></i>
+                                {{ notification.created_at|date:"d M Y, H:i" }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="alert-actions">
+
+                            {% if not notification.is_read %}
+                                <form method="POST" class="inline-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="mark_read">
+                                    <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                                    <button type="submit" class="icon-button" title="Mark as read">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            <form method="POST" class="inline-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                                <button type="submit" class="icon-button danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            <i class="bi bi-bell-slash"></i>
+                        </div>
+
+                        <h3>No alerts yet</h3>
+
+                        <p>You currently have no notifications to display.</p>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <aside class="alert-side">
+
+            <div class="side-card">
+
+                <div class="side-title">
+                    <i class="bi bi-lightning-charge"></i>
+                    <h2>Alert Overview</h2>
+                </div>
+
+                <div class="overview-item">
+                    <div class="overview-icon red">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </div>
+                    <div>
+                        <strong>Open Issues</strong>
+                        <span>Issues requiring attention</span>
+                    </div>
+                </div>
+
+                <div class="overview-item">
+                    <div class="overview-icon orange">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div>
+                        <strong>Low Stock</strong>
+                        <span>Inventory needs attention</span>
+                    </div>
+                </div>
+
+                <div class="overview-item">
+                    <div class="overview-icon blue">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div>
+                        <strong>Deliveries</strong>
+                        <span>Delivery updates</span>
+                    </div>
+                </div>
+
+                <div class="overview-item">
+                    <div class="overview-icon green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div>
+                        <strong>Programme Updates</strong>
+                        <span>General system updates</span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="notice-card">
+
+                <div class="notice-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div>
+                    <h3>Stay Updated</h3>
+                    <p>Important programme alerts will appear here as they are generated.</p>
+                </div>
+
+            </div>
+
+        </aside>
+
+    </section>
+
+</main>
+
+</body>
+</html>

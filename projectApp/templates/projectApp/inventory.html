@@ -1,0 +1,608 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory | NSNP Food Tracker</title>
+
+    <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <div class="nav-container">
+
+        <a href="{% if user.role == 'school_staff' %}{% url 'school_staff' %}{% elif user.role == 'programme_manager' or user.role == 'manager' %}{% url 'manager_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="brand">
+
+            <div class="brand-logo">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="brand-text">
+                <strong>NSNP</strong>
+                <span>Food Tracker</span>
+            </div>
+
+        </a>
+
+        <nav class="main-nav">
+
+            {% if user.role == 'programme_manager' or user.role == 'manager' %}
+
+                <a href="{% url 'manager_dashboard' %}" class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <span>Overview</span>
+                </a>
+
+                <a href="{% url 'create_delivery' %}" class="nav-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>New Delivery</span>
+                </a>
+
+                <a href="{% url 'inventory' %}" class="nav-item active">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventory</span>
+                </a>
+
+                <a href="{% url 'report_issue' %}" class="nav-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Issues</span>
+                </a>
+
+                <a href="{% url 'reports' %}" class="nav-item">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reports</span>
+                </a>
+
+                <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                    {% if unread_count %}
+                        <span class="notification-count">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'user_management' %}" class="nav-item">
+                    <i class="bi bi-people"></i>
+                    <span>Users</span>
+                </a>
+
+            {% elif user.role == 'school_staff' %}
+
+                <a href="{% url 'school_staff' %}" class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <span>Overview</span>
+                </a>
+
+                <a href="{% url 'inventory' %}" class="nav-item active">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventory</span>
+                </a>
+
+                <a href="{% url 'report_issue' %}" class="nav-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Issues</span>
+                </a>
+
+                <a href="{% url 'reports' %}" class="nav-item">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reports</span>
+                </a>
+
+                <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                    {% if unread_count %}
+                        <span class="notification-count">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a href="{% url 'notification' %}" class="header-bell">
+                <i class="bi bi-bell"></i>
+                {% if unread_count %}
+                    <span class="bell-dot"></span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'logout' %}" class="header-logout" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+
+            <div class="profile-menu">
+                <div class="profile-circle">
+                    {{ user.full_name|slice:":2"|upper }}
+                </div>
+                <div class="profile-name">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>
+                        {% if user.role == 'driver' or user.role == 'delivery_driver' %}
+                            Delivery Driver
+                        {% elif user.role == 'school_staff' %}
+                            School Staff
+                        {% elif user.role == 'programme_manager' or user.role == 'manager' %}
+                            Programme Manager
+                        {% else %}
+                            {{ user.role|title }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-label">STOCK MANAGEMENT</span>
+
+            <h1>Inventory Control</h1>
+
+            <p>Limpopo Province · {{ inventory|length }} active records</p>
+
+        </div>
+
+        <div class="hero-badge">
+
+            <i class="bi bi-exclamation-triangle"></i>
+
+            <strong>{{ low_stock_count }} low stock alerts</strong>
+
+        </div>
+
+    </section>
+
+
+    <section class="summary">
+
+        <div class="summary-card blue">
+            <div class="summary-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="summary-content">
+                <strong>{{ total_items }}</strong>
+                <span>Total Items</span>
+            </div>
+        </div>
+
+        <div class="summary-card green">
+            <div class="summary-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="summary-content">
+                <strong>{{ well_stocked_count }}</strong>
+                <span>Well Stocked</span>
+            </div>
+        </div>
+
+        <div class="summary-card red">
+            <div class="summary-icon"><i class="bi bi-graph-down-arrow"></i></div>
+            <div class="summary-content">
+                <strong>{{ low_stock_count }}</strong>
+                <span>Low Stock</span>
+            </div>
+        </div>
+
+        <div class="summary-card orange">
+            <div class="summary-icon"><i class="bi bi-cart"></i></div>
+            <div class="summary-content">
+                <strong>{{ orders_needed }}</strong>
+                <span>Orders Needed</span>
+            </div>
+        </div>
+
+    </section>
+
+
+    {% if low_stock_items %}
+
+    <section class="low-stock-panel">
+
+        <div class="low-stock-title">
+            <i class="bi bi-exclamation-triangle"></i>
+            <h2>Low Stock Alerts — Action Required</h2>
+        </div>
+
+        <div class="low-stock-grid">
+
+            {% for item in low_stock_items %}
+
+            <div class="low-stock-card">
+
+                <div class="food-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+
+                <div class="low-stock-info">
+
+                    <strong>{{ item.food_item }}</strong>
+                    <span>{{ item.school }}</span>
+
+                    <div class="stock-progress">
+
+                        <div class="stock-track">
+                            <div class="stock-fill" style="width: {{ item.percentage }}%;"></div>
+                        </div>
+
+                        <span>{{ item.quantity }} / {{ item.minimum_stock }} target</span>
+
+                    </div>
+
+                </div>
+
+                <button type="button" class="order-button"
+                        onclick="alert('Order request submitted for {{ item.food_item }} at {{ item.school }}.');">
+                    Order
+                </button>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <section class="inventory-search-section">
+
+        <div class="search-area">
+            <i class="bi bi-search"></i>
+            <input type="text"
+                   id="inventorySearch"
+                   placeholder="Search by item, school, or batch reference...">
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-button active" data-filter="all">All</button>
+            <button class="filter-button" data-filter="good">Good</button>
+            <button class="filter-button" data-filter="low">Low</button>
+        </div>
+
+        <div class="stock-image">
+            <img src="{% static 'images/menu-rice.png' %}" alt="Food Stock">
+            <div class="stock-image-overlay"></div>
+            <strong>Stock Tracker</strong>
+        </div>
+
+    </section>
+
+
+    <section class="inventory-panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>All Inventory Records</h2>
+                <p>{{ inventory|length }} of {{ inventory|length }} records</p>
+            </div>
+
+            <div class="panel-header-actions">
+
+                <button type="button" class="refresh-button" onclick="window.location.reload()">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Refresh
+                </button>
+
+                <button type="button" class="add-item-button" id="openAddModal">
+                    <i class="bi bi-plus-circle"></i>
+                    Add Item
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table id="inventoryTable">
+
+                <thead>
+                    <tr>
+                        <th>Batch Ref</th>
+                        <th>Item</th>
+                        <th>School</th>
+                        <th>Qty / Min</th>
+                        <th>Stock Level</th>
+                        <th>Expiry</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in inventory %}
+
+                    <tr data-status="{% if item.quantity < item.minimum_stock %}low{% else %}good{% endif %}">
+
+                        <td>
+                            <span class="batch-reference">
+                                {{ item.batch_reference|default:"N/A" }}
+                            </span>
+                        </td>
+
+                        <td><strong>{{ item.food_item }}</strong></td>
+
+                        <td>{{ item.school }}</td>
+
+                        <td>
+                            <strong>{{ item.quantity }}</strong>
+                            <span class="minimum-text">/ {{ item.minimum_stock }} min</span>
+                        </td>
+
+                        <td>
+                            <div class="stock-cell">
+                                <div class="progress">
+                                    <div class="progress-bar {% if item.quantity < item.minimum_stock %}low{% endif %}"
+                                         style="width: {{ item.percentage }}%;"></div>
+                                </div>
+                                <span>{{ item.percentage }}%</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            {% if item.expiry_date %}
+                                {{ item.expiry_date|date:"Y-m-d" }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.quantity < item.minimum_stock %}
+                                <span class="status low">
+                                    <i class="bi bi-circle-fill"></i>
+                                    Low
+                                </span>
+                            {% else %}
+                                <span class="status adequate">
+                                    <i class="bi bi-circle-fill"></i>
+                                    Good
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <a href="{% url 'edit_inventory' item.id %}"
+                                   class="edit-button"
+                                   title="Edit inventory">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <form method="POST"
+                                      action="{% url 'delete_inventory' item.id %}"
+                                      class="inline-form"
+                                      onsubmit="return confirm('Delete {{ item.food_item }} at {{ item.school }}?');">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="delete-button"
+                                            title="Delete inventory">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="bi bi-box-seam"></i>
+                                <strong>No inventory records found</strong>
+                                <span>Inventory records will appear here when they are added.</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<div class="modal-overlay" id="addModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>Add Inventory Item</h2>
+                <p>Enter the details for the new stock item.</p>
+            </div>
+
+            <button type="button" class="modal-close" id="closeAddModal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+        <form method="POST" class="modal-form">
+
+            {% csrf_token %}
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="food_item">Food Item <span>*</span></label>
+                    <input type="text" id="food_item" name="food_item" placeholder="e.g. Rice" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category <span>*</span></label>
+                    <input type="text" id="category" name="category" placeholder="e.g. Grain" required>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="school">School <span>*</span></label>
+                <input type="text" id="school" name="school" placeholder="e.g. Greenfield Primary School" required>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="quantity">Quantity <span>*</span></label>
+                    <input type="number" id="quantity" name="quantity" min="0" placeholder="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="minimum_stock">Minimum Stock <span>*</span></label>
+                    <input type="number" id="minimum_stock" name="minimum_stock" min="0" placeholder="10" required>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="expiry_date">Expiry Date</label>
+                    <input type="date" id="expiry_date" name="expiry_date">
+                </div>
+
+                <div class="form-group">
+                    <label for="batch_reference">Batch Reference</label>
+                    <input type="text" id="batch_reference" name="batch_reference" placeholder="e.g. RICE-2026-001">
+                </div>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="button" class="cancel-button" id="cancelAddModal">
+                    Cancel
+                </button>
+
+                <button type="submit" class="save-button">
+                    <i class="bi bi-check-circle"></i>
+                    Save Item
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const searchInput = document.getElementById("inventorySearch");
+const tableRows = document.querySelectorAll("#inventoryTable tbody tr");
+const filterButtons = document.querySelectorAll(".filter-button");
+
+searchInput.addEventListener("input", function () {
+
+    const searchValue = this.value.toLowerCase();
+
+    tableRows.forEach(function (row) {
+        const rowText = row.textContent.toLowerCase();
+        row.style.display = rowText.includes(searchValue) ? "" : "none";
+    });
+
+});
+
+filterButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+        filterButtons.forEach(function (item) {
+            item.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+        const filter = this.dataset.filter;
+
+        tableRows.forEach(function (row) {
+
+            if (filter === "all") {
+                row.style.display = "";
+                return;
+            }
+
+            row.style.display = row.dataset.status === filter ? "" : "none";
+
+        });
+
+    });
+
+});
+
+const addModal = document.getElementById("addModal");
+const openAddModal = document.getElementById("openAddModal");
+const closeAddModal = document.getElementById("closeAddModal");
+const cancelAddModal = document.getElementById("cancelAddModal");
+
+function openModal() {
+    addModal.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+    addModal.classList.remove("show");
+    document.body.style.overflow = "";
+}
+
+if (openAddModal) openAddModal.addEventListener("click", openModal);
+if (closeAddModal) closeAddModal.addEventListener("click", closeModal);
+if (cancelAddModal) cancelAddModal.addEventListener("click", closeModal);
+
+if (addModal) {
+    addModal.addEventListener("click", function (event) {
+        if (event.target === addModal) closeModal();
+    });
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,792 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manager Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/manager_dashboard.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <div class="nav-container">
+
+        <a href="{% url 'manager_dashboard' %}" class="brand">
+
+            <div class="brand-logo">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="brand-text">
+                <strong>NSNP</strong>
+                <span>Food Tracker</span>
+            </div>
+
+        </a>
+
+
+        <nav class="main-nav">
+
+            <a href="{% url 'manager_dashboard' %}" class="nav-item active">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Overview</span>
+            </a>
+
+            <a href="{% url 'create_delivery' %}" class="nav-item">
+                <i class="bi bi-plus-circle"></i>
+                <span>New Delivery</span>
+            </a>
+
+            <a href="{% url 'inventory' %}" class="nav-item">
+                <i class="bi bi-box-seam"></i>
+                <span>Inventory</span>
+            </a>
+
+            <a href="{% url 'report_issue' %}" class="nav-item">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>Issues</span>
+            </a>
+
+            <a href="{% url 'reports' %}" class="nav-item">
+                <i class="bi bi-bar-chart"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="{% url 'notification' %}" class="nav-item notification-nav">
+
+                <i class="bi bi-bell"></i>
+
+                <span>Alerts</span>
+
+                {% if unread_count %}
+                    <span class="notification-count">
+                        {{ unread_count }}
+                    </span>
+                {% endif %}
+
+            </a>
+
+            <a href="{% url 'user_management' %}" class="nav-item">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a href="{% url 'notification' %}" class="header-bell">
+                <i class="bi bi-bell"></i>
+                {% if unread_count %}
+                    <span class="bell-dot"></span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'logout' %}" class="header-logout" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+
+            <div class="profile-menu">
+                <div class="profile-circle">{{ user.full_name|slice:":2"|upper }}</div>
+                <div class="profile-name">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Programme Manager</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-label">
+                PROGRAMME OVERVIEW
+            </span>
+
+            <h1>
+                Manager Dashboard
+            </h1>
+
+            <p>
+                Limpopo Province · Programme Overview
+            </p>
+
+        </div>
+
+
+        <div class="learners-badge">
+
+            <i class="bi bi-lightning-charge-fill"></i>
+
+            <div>
+
+                <strong>
+                    Programme Active
+                </strong>
+
+                <span>
+                    Monitoring this week
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="summary">
+
+
+        <div class="summary-card green">
+
+            <div class="summary-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ total_schools|default:"0" }}
+                </strong>
+
+                <span>
+                    Schools Active
+                </span>
+
+                <small>
+                    Programme schools
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card blue">
+
+            <div class="summary-icon">
+                <i class="bi bi-truck"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ total_deliveries|default:"0" }}
+                </strong>
+
+                <span>
+                    Today's Deliveries
+                </span>
+
+                <small>
+                    Current delivery activity
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card purple">
+
+            <div class="summary-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ meals_served|default:"0" }}
+                </strong>
+
+                <span>
+                    Meals Served
+                </span>
+
+                <small>
+                    Recorded meals
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card orange">
+
+            <div class="summary-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ open_issues|default:"0" }}
+                </strong>
+
+                <span>
+                    Open Issues
+                </span>
+
+                <small>
+                    Issues requiring attention
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card teal">
+
+            <div class="summary-icon">
+                <i class="bi bi-person-check"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ active_drivers|default:"0" }}
+                </strong>
+
+                <span>
+                    Active Drivers
+                </span>
+
+                <small>
+                    Approved drivers
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card red">
+
+            <div class="summary-icon">
+                <i class="bi bi-box-seam"></i>
+            </div>
+
+            <div class="summary-content">
+
+                <strong>
+                    {{ low_stock_count|default:"0" }}
+                </strong>
+
+                <span>
+                    Low Stock Alerts
+                </span>
+
+                <small>
+                    Items below minimum
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="dashboard-grid">
+
+
+        <div class="panel weekly-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Weekly Deliveries
+                    </h2>
+
+                    <p>
+                        Current programme delivery activity
+                    </p>
+
+                </div>
+
+                <span class="total-badge">
+                    {{ total_deliveries|default:"0" }} total
+                </span>
+
+            </div>
+
+
+            <div class="delivery-chart">
+
+                <div class="chart-y-axis">
+
+                    <span>180</span>
+                    <span>150</span>
+                    <span>120</span>
+                    <span>90</span>
+                    <span>60</span>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <div class="chart-grid-line line-1"></div>
+                    <div class="chart-grid-line line-2"></div>
+                    <div class="chart-grid-line line-3"></div>
+                    <div class="chart-grid-line line-4"></div>
+                    <div class="chart-grid-line line-5"></div>
+
+
+                    <div class="target-line"></div>
+
+                    <div class="delivery-bars">
+
+                        {% for day in weekly_delivery_data %}
+
+                            <div class="delivery-day">
+
+                                <div class="delivery-bar"
+                                     style="height: {% widthratio day.deliveries 180 100 %}%;">
+                                </div>
+
+                                <span>{{ day.day }}</span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel alerts-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Live Alerts
+                    </h2>
+
+                    <p>
+                        Items requiring attention
+                    </p>
+
+                </div>
+
+                <span class="live-dot"></span>
+
+            </div>
+
+
+            <div class="alerts-list">
+
+
+                <div class="alert-card danger">
+
+                    <div class="alert-icon">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Open delivery issues
+                        </strong>
+
+                        <span>
+                            {{ open_issues|default:"0" }} issue(s) currently open
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="alert-card warning">
+
+                    <div class="alert-icon">
+                        <i class="bi bi-box-seam-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Low stock warning
+                        </strong>
+
+                        <span>
+                            {{ low_stock_count|default:"0" }} item(s) need attention
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="alert-card info">
+
+                    <div class="alert-icon">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Pending registrations
+                        </strong>
+
+                        <span>
+                            {{ pending_registration_count|default:"0" }} user(s) waiting
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="lower-grid">
+
+
+        <div class="panel compliance-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        District Compliance
+                    </h2>
+
+                    <p>
+                        Deliveries completed vs. total per district
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="compliance-chart">
+
+                <div class="compliance-y">
+
+                    <span>100</span>
+                    <span>75</span>
+                    <span>50</span>
+                    <span>25</span>
+                    <span>0</span>
+
+                </div>
+
+
+                <div class="compliance-area">
+
+                    <div class="compliance-grid grid-1"></div>
+                    <div class="compliance-grid grid-2"></div>
+                    <div class="compliance-grid grid-3"></div>
+                    <div class="compliance-grid grid-4"></div>
+
+
+                    <div class="district-bars">
+
+                        {% for district in district_compliance_data %}
+
+                            <div class="district">
+
+                                <div class="district-bar-stack">
+
+                                    <div class="district-bar total"
+                                         style="height: {{ district.total_height }}%;"
+                                         title="Total Deliveries: {{ district.total }}">
+                                    </div>
+
+                                    <div class="district-bar compliant"
+                                         style="height: {{ district.compliant_height }}%;"
+                                         title="Completed: {{ district.compliant }} of {{ district.total }} ({{ district.percentage }}%)">
+                                    </div>
+
+                                </div>
+
+                                <span>{{ district.name }}</span>
+
+                            </div>
+
+                        {% empty %}
+
+                            <p style="text-align: center; color: #8a96a7; font-size: 13px; padding: 40px 20px; width: 100%;">
+                                No district data available. Create deliveries to see this chart.
+                            </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-legend">
+
+                <span>
+                    <i class="legend total"></i>
+                    Total Deliveries
+                </span>
+
+                <span>
+                    <i class="legend compliant"></i>
+                    Completed
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="food-cards">
+
+
+            <div class="food-card rice-card">
+
+                <div class="food-overlay"></div>
+
+                <div class="food-content">
+
+                    <strong>
+                        Rice
+                    </strong>
+
+                    <span>
+                        Top distributed food item
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="food-card legumes-card">
+
+                <div class="food-overlay"></div>
+
+                <div class="food-content">
+
+                    <strong>
+                        Legumes
+                    </strong>
+
+                    <span>
+                        Beans, lentils & more
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="panel school-panel" id="schools">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    School Performance
+                </h2>
+
+                <p>
+                    School delivery and compliance overview
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            School
+                        </th>
+
+                        <th>
+                            On-Time %
+                        </th>
+
+                        <th>
+                            Compliance
+                        </th>
+
+                        <th>
+                            Meals / Week
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% if school_performance %}
+
+                        {% for school in school_performance %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ school.name }}
+                                    </strong>
+                                </td>
+
+                                <td>
+
+                                    <div class="percentage-cell">
+
+                                        <div class="percentage-bar">
+
+                                            <div class="percentage-fill green-fill"
+                                                 style="width: {{ school.on_time }}%;">
+                                            </div>
+
+                                        </div>
+
+                                        <span>
+                                            {{ school.on_time }}%
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="percentage-cell">
+
+                                        <div class="percentage-bar">
+
+                                            <div class="percentage-fill blue-fill"
+                                                 style="width: {{ school.compliance }}%;">
+                                            </div>
+
+                                        </div>
+
+                                        <span>
+                                            {{ school.compliance }}%
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    {{ school.meals }}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="school-status {{ school.status|lower }}">
+                                        {{ school.status }}
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="5">
+
+                                <div class="table-empty">
+
+                                    <i class="bi bi-buildings"></i>
+
+                                    <strong>
+                                        No school performance data available
+                                    </strong>
+
+                                    <span>
+                                        School performance information will appear here.
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+</body>
+
+</html>

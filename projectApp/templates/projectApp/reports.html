@@ -1,0 +1,1209 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reports & Export</title>
+
+    <link rel="stylesheet" href="{% static 'css/reports.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <div class="nav-container">
+
+        <a href="{% if user.role == 'school_staff' %}{% url 'school_staff' %}{% elif user.role == 'programme_manager' or user.role == 'manager' %}{% url 'manager_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="brand">
+
+            <div class="brand-logo">
+                <img src="{% static 'images/logo.png' %}" alt="NSNP Logo">
+            </div>
+
+            <div class="brand-text">
+                <strong>NSNP</strong>
+                <span>Food Tracker</span>
+            </div>
+
+        </a>
+
+        <nav class="main-nav">
+
+            {% if user.role == 'programme_manager' or user.role == 'manager' %}
+
+                <a href="{% url 'manager_dashboard' %}" class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <span>Overview</span>
+                </a>
+
+                <a href="{% url 'create_delivery' %}" class="nav-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>New Delivery</span>
+                </a>
+
+                <a href="{% url 'inventory' %}" class="nav-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventory</span>
+                </a>
+
+                <a href="{% url 'report_issue' %}" class="nav-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Issues</span>
+                </a>
+
+                <a href="{% url 'reports' %}" class="nav-item active">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reports</span>
+                </a>
+
+                <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                    {% if unread_notifications %}
+                        <span class="notification-count">{{ unread_notifications }}</span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'user_management' %}" class="nav-item">
+                    <i class="bi bi-people"></i>
+                    <span>Users</span>
+                </a>
+
+            {% elif user.role == 'school_staff' %}
+
+                <a href="{% url 'school_staff' %}" class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <span>Overview</span>
+                </a>
+
+                <a href="{% url 'inventory' %}" class="nav-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventory</span>
+                </a>
+
+                <a href="{% url 'report_issue' %}" class="nav-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Issues</span>
+                </a>
+
+                <a href="{% url 'reports' %}" class="nav-item active">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reports</span>
+                </a>
+
+                <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                    {% if unread_notifications %}
+                        <span class="notification-count">{{ unread_notifications }}</span>
+                    {% endif %}
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a href="{% url 'notification' %}" class="header-bell">
+                <i class="bi bi-bell"></i>
+                {% if unread_notifications %}
+                    <span class="bell-dot"></span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'logout' %}" class="header-logout" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+
+            <div class="profile-menu">
+                <div class="profile-circle">
+                    {{ user.full_name|slice:":2"|upper }}
+                </div>
+                <div class="profile-name">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>
+                        {% if user.role == 'school_staff' %}
+                            School Staff
+                        {% else %}
+                            Programme Manager
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+<main class="page-container">
+
+
+    <section class="hero">
+
+        <img
+            src="https://images.unsplash.com/photo-1748609160056-7b95f30041f0?w=1400&h=500&fit=crop&auto=format"
+            alt="Data analytics"
+            class="hero-image"
+        >
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <div class="hero-text">
+
+                <span class="hero-label">
+                    ANALYTICS
+                </span>
+
+                <h1>
+                    Reports & Export
+                </h1>
+
+                <p>
+                    Generate, analyse, and download programme reports
+                </p>
+
+            </div>
+
+            <div class="hero-status">
+
+                <i class="bi bi-bar-chart"></i>
+
+                <span>
+                    {{ recent_reports|length }} reports ready to download
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="summary-grid">
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon green">
+
+                <i class="bi bi-check-circle"></i>
+
+            </div>
+
+            <p class="summary-number">
+                {{ completed_deliveries }}
+            </p>
+
+            <p class="summary-title">
+                Deliveries Completed
+            </p>
+
+            <p class="summary-sub">
+                Recorded deliveries
+            </p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon blue">
+
+                <i class="bi bi-clock"></i>
+
+            </div>
+
+            <p class="summary-number">
+                {{ completion_rate }}%
+            </p>
+
+            <p class="summary-title">
+                Completion Rate
+            </p>
+
+            <p class="summary-sub">
+                Delivery completion
+            </p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon orange">
+
+                <i class="bi bi-exclamation-triangle"></i>
+
+            </div>
+
+            <p class="summary-number">
+                {{ total_issues }}
+            </p>
+
+            <p class="summary-title">
+                Issues Raised
+            </p>
+
+            <p class="summary-sub">
+                {{ resolved_issues }} resolved
+            </p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon purple">
+
+                <i class="bi bi-file-earmark-text"></i>
+
+            </div>
+
+            <p class="summary-number">
+                {{ total_inventory_items }}
+            </p>
+
+            <p class="summary-title">
+                Inventory Items
+            </p>
+
+            <p class="summary-sub">
+                Items currently tracked
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <section class="charts-grid">
+
+
+        <div class="chart-card">
+
+            <div class="chart-heading">
+
+                <div>
+
+                    <h2>
+                        Weekly Delivery Performance
+                    </h2>
+
+                    <p>
+                        Completed and pending deliveries
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="deliveryChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <div class="chart-heading">
+
+                <div>
+
+                    <h2>
+                        Inventory Distribution
+                    </h2>
+
+                    <p>
+                        Inventory quantities over time
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="inventoryChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <section class="bottom-grid">
+
+
+        <div class="report-builder">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Generate Report
+                    </h2>
+
+                    <p>
+                        Create a custom programme report
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form method="GET"
+                  action="{% url 'download_report' %}"
+                  id="reportForm">
+
+
+                <div class="form-group">
+
+                    <label for="report_type">
+                        Report Type
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-funnel"></i>
+
+                        <select
+                            id="report_type"
+                            name="report_type"
+                        >
+
+                            <option value="delivery">
+                                Delivery Performance
+                            </option>
+
+                            <option value="inventory">
+                                Inventory Summary
+                            </option>
+
+                            <option value="issues">
+                                Issues Report
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="date_range">
+                        Date Range
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-calendar3"></i>
+
+                        <select
+                            id="date_range"
+                            name="date_range"
+                        >
+
+                            <option value="this-week">
+                                This week
+                            </option>
+
+                            <option value="last-6-weeks" selected>
+                                Last 6 weeks
+                            </option>
+
+                            <option value="this-month">
+                                This month
+                            </option>
+
+                            <option value="last-quarter">
+                                Last quarter
+                            </option>
+
+                            <option value="custom">
+                                Custom range
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="date-fields">
+
+                    <div class="form-group">
+
+                        <label for="date_from">
+                            Date From
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-calendar3"></i>
+
+                            <input
+                                type="date"
+                                id="date_from"
+                                name="date_from"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="date_to">
+                            Date To
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-calendar3"></i>
+
+                            <input
+                                type="date"
+                                id="date_to"
+                                name="date_to"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Export Format
+                    </label>
+
+                    <div class="format-buttons">
+
+                        <button
+                            type="button"
+                            class="format-button active"
+                            data-format="PDF"
+                        >
+                            PDF
+                        </button>
+
+                        <button
+                            type="button"
+                            class="format-button"
+                            data-format="Excel"
+                        >
+                            Excel
+                        </button>
+
+                        <button
+                            type="button"
+                            class="format-button"
+                            data-format="CSV"
+                        >
+                            CSV
+                        </button>
+
+                    </div>
+
+                    <input
+                        type="hidden"
+                        name="format"
+                        id="format"
+                        value="PDF"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="generate-button"
+                    id="generateReport"
+                >
+
+                    <i class="bi bi-file-earmark-text"></i>
+
+                    <span>
+                        Generate Report
+                    </span>
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+
+        <div class="recent-reports">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Recent Reports
+                    </h2>
+
+                    <p>
+                        Download previously generated reports
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="report-list">
+
+                {% for report in recent_reports %}
+
+                <div class="report-item">
+
+                    <div class="report-icon">
+
+                        {% if report.format == 'Excel' %}
+
+                            <i class="bi bi-file-earmark-spreadsheet"></i>
+
+                        {% elif report.format == 'CSV' %}
+
+                            <i class="bi bi-filetype-csv"></i>
+
+                        {% else %}
+
+                            <i class="bi bi-file-earmark-pdf"></i>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="report-details">
+
+                        <strong>
+                            {{ report.name }}
+                        </strong>
+
+                        <div class="report-meta">
+
+                            <span>
+                                {{ report.format }}
+                            </span>
+
+                            <span>
+                                {{ report.date|date:"d M Y" }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="report-action">
+
+                        <span class="format-label">
+                            {{ report.format }}
+                        </span>
+
+                       <a href="{% url 'download_report' %}?report_type={% if report.type == 'Delivery' %}delivery{% elif report.type == 'Inventory' %}inventory{% else %}issues{% endif %}&format={{ report.format }}"
+   class="download-button">
+
+    <i class="bi bi-download"></i>
+    Download
+
+</a>
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                <div class="empty-reports">
+
+                    <div class="empty-icon">
+
+                        <i class="bi bi-file-earmark-text"></i>
+
+                    </div>
+
+                    <h3>
+                        No reports generated yet
+                    </h3>
+
+                    <p>
+                        Generate a report using the Report Builder.
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <section class="statistics-grid">
+
+
+        <div class="statistics-card">
+
+            <div class="statistics-heading">
+
+                <div class="statistics-icon green">
+                    <i class="bi bi-truck"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Delivery Statistics
+                    </h3>
+
+                    <p>
+                        Current delivery performance
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="statistics-list">
+
+                <div class="statistics-row">
+
+                    <span>
+                        Total Deliveries
+                    </span>
+
+                    <strong>
+                        {{ total_deliveries }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Completed Deliveries
+                    </span>
+
+                    <strong class="green-text">
+                        {{ completed_deliveries }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Pending Deliveries
+                    </span>
+
+                    <strong class="amber-text">
+                        {{ pending_deliveries }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Completion Rate
+                    </span>
+
+                    <strong class="blue-text">
+                        {{ completion_rate }}%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="statistics-card">
+
+            <div class="statistics-heading">
+
+                <div class="statistics-icon blue">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Inventory Overview
+                    </h3>
+
+                    <p>
+                        Current stock information
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="statistics-list">
+
+                <div class="statistics-row">
+
+                    <span>
+                        Total Items Tracked
+                    </span>
+
+                    <strong>
+                        {{ total_inventory_items }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Low Stock Items
+                    </span>
+
+                    <strong class="amber-text">
+                        {{ low_stock_items }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Expiring Soon
+                    </span>
+
+                    <strong class="red-text">
+                        {{ expiring_items }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Total Quantity
+                    </span>
+
+                    <strong>
+                        {{ total_inventory_quantity }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="statistics-card">
+
+            <div class="statistics-heading">
+
+                <div class="statistics-icon red">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Issues Summary
+                    </h3>
+
+                    <p>
+                        Current issue status
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="statistics-list">
+
+                <div class="statistics-row">
+
+                    <span>
+                        Total Issues Filed
+                    </span>
+
+                    <strong>
+                        {{ total_issues }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Resolved
+                    </span>
+
+                    <strong class="green-text">
+                        {{ resolved_issues }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Pending Resolution
+                    </span>
+
+                    <strong class="amber-text">
+                        {{ open_issues }}
+                    </strong>
+
+                </div>
+
+                <div class="statistics-row">
+
+                    <span>
+                        Resolution Rate
+                    </span>
+
+                    <strong class="blue-text">
+                        {{ resolution_rate }}%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+const deliveryLabels = {{ delivery_labels|safe }};
+
+const completedDeliveries = {{ delivery_completed_data|safe }};
+
+const pendingDeliveries = {{ delivery_pending_data|safe }};
+
+const inventoryLabels = {{ inventory_labels|safe }};
+
+const inventoryData = {{ inventory_data|safe }};
+
+
+const deliveryChart = document.getElementById('deliveryChart');
+
+new Chart(deliveryChart, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: deliveryLabels,
+
+        datasets: [
+
+            {
+                label: 'Completed',
+                data: completedDeliveries,
+                backgroundColor: '#16a34a',
+                borderRadius: 5,
+                borderSkipped: false
+            },
+
+            {
+                label: 'Pending',
+                data: pendingDeliveries,
+                backgroundColor: '#3b82f6',
+                borderRadius: 5,
+                borderSkipped: false
+            }
+
+        ]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+
+        plugins: {
+
+            legend: {
+                position: 'top',
+                align: 'end',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 18,
+                    color: '#64748b',
+                    font: {
+                        size: 11
+                    }
+                }
+            },
+
+            tooltip: {
+                backgroundColor: '#111827',
+                padding: 12,
+                cornerRadius: 10
+            }
+
+        },
+
+        scales: {
+
+            x: {
+
+                grid: {
+                    display: false
+                },
+
+                ticks: {
+                    color: '#94a3b8',
+                    font: {
+                        size: 11
+                    }
+                },
+
+                border: {
+                    display: false
+                }
+
+            },
+
+            y: {
+
+                beginAtZero: true,
+
+                grid: {
+                    color: '#f1f5f9'
+                },
+
+                ticks: {
+                    color: '#94a3b8',
+                    font: {
+                        size: 11
+                    }
+                },
+
+                border: {
+                    display: false
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+
+const inventoryChart = document.getElementById('inventoryChart');
+
+new Chart(inventoryChart, {
+
+    type: 'line',
+
+    data: {
+
+        labels: inventoryLabels,
+
+        datasets: [
+
+            {
+                label: 'Inventory Quantity',
+                data: inventoryData,
+                borderColor: '#7c3aed',
+                backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                borderWidth: 3,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#7c3aed',
+                fill: true
+            }
+
+        ]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+
+        plugins: {
+
+            legend: {
+                position: 'top',
+                align: 'end',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 18,
+                    color: '#64748b',
+                    font: {
+                        size: 11
+                    }
+                }
+            },
+
+            tooltip: {
+                backgroundColor: '#111827',
+                padding: 12,
+                cornerRadius: 10
+            }
+
+        },
+
+        scales: {
+
+            x: {
+
+                grid: {
+                    display: false
+                },
+
+                ticks: {
+                    color: '#94a3b8',
+                    font: {
+                        size: 11
+                    }
+                },
+
+                border: {
+                    display: false
+                }
+
+            },
+
+            y: {
+
+                beginAtZero: true,
+
+                grid: {
+                    color: '#f1f5f9'
+                },
+
+                ticks: {
+                    color: '#94a3b8',
+                    font: {
+                        size: 11
+                    }
+                },
+
+                border: {
+                    display: false
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+
+const formatButtons = document.querySelectorAll('.format-button');
+
+const formatInput = document.getElementById('format');
+
+
+formatButtons.forEach(function(button) {
+
+    button.addEventListener('click', function() {
+
+        formatButtons.forEach(function(item) {
+
+            item.classList.remove('active');
+
+        });
+
+        button.classList.add('active');
+
+        const selected = button.getAttribute('data-format');
+
+        formatInput.value = selected;
+
+    });
+
+});
+
+const dateRange = document.getElementById('date_range');
+const dateFrom = document.getElementById('date_from');
+const dateTo = document.getElementById('date_to');
+
+dateRange.addEventListener('change', function() {
+
+    if (dateRange.value === 'custom') {
+        dateFrom.value = '';
+        dateTo.value = '';
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>
