@@ -21,7 +21,9 @@ SECRET_KEY = 'django-insecure-pz_yiu=20z@(8f5ek+yhnnc-d@sp4136y_h!+0)n6vohl7x5=+
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =['nsnp-food-tracking-gvv4.onrender.com', 'localhost', '127.0.0.1']
+
+CSRF_TRUSTED_ORIGINS = ['https://nsnp-food-tracking-gvv4.onrender.com']
 
 
 INSTALLED_APPS = [
