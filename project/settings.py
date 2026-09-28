@@ -17,8 +17,6 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-pz_yiu=20z@(8f5ek+yhnnc-d@sp4136y_h!+0)n6vohl7x5=+'
-
 DEBUG = True
 
 ALLOWED_HOSTS =['nsnp-food-tracking-gvv4.onrender.com', 'localhost', '127.0.0.1']
@@ -156,15 +154,11 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = 'nsnpfoodtracking@gmail.com'
 
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'pmpopaptvkqufnoe')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = 'nsnpfoodtracking@gmail.com'
 
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-pz_yiu=20z@(8f5ek+yhnnc-d@sp4136y_h!+0)n6vohl7x5=+'
-)
-
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'local-dev-only-key')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
