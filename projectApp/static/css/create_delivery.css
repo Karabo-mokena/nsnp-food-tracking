@@ -521,6 +521,7 @@ form {
 .table-wrap {
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .recent-deliveries-panel table {
@@ -678,27 +679,78 @@ form {
     }
 }
 
+/* Extra-small phones */
 @media (max-width: 700px) {
 
     .top-header {
         height: 68px;
     }
 
+    .nav-container {
+        padding: 0 12px;
+        gap: 8px;
+    }
+
     .brand {
         width: auto;
         flex: 1;
+        min-width: 0;
     }
 
+    /* Keep nav visible and scrollable */
     .main-nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .main-nav::-webkit-scrollbar {
         display: none;
+    }
+
+    .nav-item {
+        padding: 0 10px;
+        min-height: 38px;
+        flex-shrink: 0;
     }
 
     .header-actions {
         width: auto;
+        gap: 4px;
+        margin-left: auto;
+        flex-shrink: 0;
     }
 
-    .profile-name {
-        display: flex;
+    .header-bell,
+    .header-logout {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .profile-menu {
+        padding: 4px 8px 4px 4px;
+        gap: 6px;
+    }
+
+    .profile-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+    }
+
+    .page {
+        width: calc(100% - 24px);
+        margin: 20px auto 40px;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
     }
 
     .form-row {
@@ -706,11 +758,15 @@ form {
     }
 
     form {
-        padding: 22px;
+        padding: 20px;
     }
 
     .form-header {
-        padding: 20px 22px;
+        padding: 18px 20px;
+    }
+
+    .form-header h2 {
+        font-size: 16px;
     }
 
     .form-actions {
@@ -721,17 +777,49 @@ form {
     .save-button {
         width: 100%;
         justify-content: center;
+        min-height: 50px;
+        font-size: 14px;
     }
 
     .panel-heading {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+        padding: 18px 20px;
     }
 
     .recent-deliveries-panel th,
     .recent-deliveries-panel td {
         padding-left: 16px;
         padding-right: 16px;
+    }
+
+    .error-message,
+    .warning-message {
+        margin: 16px 20px 0;
+        font-size: 12.5px;
+    }
+
+    /* Make form inputs bigger for touch */
+    .input-wrapper input,
+    .input-wrapper select {
+        height: 50px;
+        font-size: 15px;
+    }
+}
+
+/* Ultra-small phones (320px) */
+@media (max-width: 400px) {
+
+    .nav-item span {
+        display: none;
+    }
+
+    .brand-text {
+        display: none;
+    }
+
+    .page-header h1 {
+        font-size: 20px;
     }
 }
