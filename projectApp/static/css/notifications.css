@@ -137,23 +137,6 @@ input {
     font-weight: 700;
 }
 
-.nav-badge {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    min-width: 17px;
-    height: 17px;
-    padding: 0 4px;
-    border-radius: 50%;
-    background: #f33d4d;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
-}
-
 .header-actions {
     width: 205px;
     flex-shrink: 0;
@@ -429,6 +412,7 @@ input {
     gap: 16px;
     padding: 22px 26px;
     border-bottom: 1px solid #edf3f0;
+    flex-wrap: wrap;
 }
 
 .panel-header h2 {
@@ -447,6 +431,7 @@ input {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
 }
 
 .alert-count {
@@ -456,6 +441,7 @@ input {
     color: #078b42;
     font-size: 12px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .inline-form {
@@ -467,7 +453,7 @@ input {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    height: 36px;
+    height: 40px;
     padding: 0 14px;
     border: 1px solid #cbdcf3;
     border-radius: 10px;
@@ -541,6 +527,7 @@ input {
     align-items: center;
     gap: 10px;
     margin-bottom: 6px;
+    flex-wrap: wrap;
 }
 
 .alert-top h3 {
@@ -567,6 +554,7 @@ input {
     color: #4b5d54;
     font-size: 13.5px;
     line-height: 1.55;
+    word-wrap: break-word;
 }
 
 .alert-date {
@@ -585,16 +573,16 @@ input {
 }
 
 .alert-actions .icon-button {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 1px solid #e2eee8;
-    border-radius: 9px;
+    border-radius: 10px;
     background: #ffffff;
     color: #6b7688;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     padding: 0;
     transition: all 0.2s ease;
@@ -812,32 +800,100 @@ input {
     }
 }
 
+/* Tablet / Large phone */
 @media (max-width: 800px) {
+
+    body {
+        font-size: 16px;
+    }
 
     .top-header {
         height: 68px;
     }
 
+    .nav-container {
+        padding: 0 12px;
+        gap: 8px;
+    }
+
     .brand {
         width: auto;
         flex: 1;
+        min-width: 0;
     }
 
+    /* Keep nav visible and scrollable on mobile */
     .main-nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .main-nav::-webkit-scrollbar {
         display: none;
+    }
+
+    .main-nav a {
+        padding: 0 10px;
+        min-height: 38px;
+        flex-shrink: 0;
+    }
+
+    .main-nav a span {
+        display: inline;
+        font-size: 12px;
+    }
+
+    .main-nav a i {
+        font-size: 16px;
     }
 
     .header-actions {
         width: auto;
+        gap: 4px;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .header-bell,
+    .header-logout {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .profile-menu {
+        padding: 4px 8px 4px 4px;
+        gap: 6px;
+    }
+
+    .profile-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
     }
 
     .profile-name {
-        display: flex;
+        display: none;
+    }
+
+    .page-container {
+        width: calc(100% - 24px);
+        margin-top: 20px;
     }
 
     .summary-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 14px;
+    }
+
+    .summary-card {
+        min-height: 120px;
     }
 
     .hero {
@@ -851,6 +907,25 @@ input {
 
     .alert-side {
         grid-template-columns: 1fr;
+    }
+
+    .panel-header {
+        padding: 18px 20px;
+    }
+
+    .alerts-list {
+        padding: 18px 18px 22px;
+    }
+
+    .action-button {
+        height: 44px;
+        font-size: 13px;
+    }
+
+    .alert-actions .icon-button {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
     }
 }
 
@@ -877,6 +952,7 @@ input {
         height: 240px;
         padding: 22px;
         align-items: flex-end;
+        background-position: 25% center;
     }
 
     .hero-content {
@@ -894,8 +970,9 @@ input {
     }
 
     .hero-alert {
-        min-height: 40px;
+        min-height: 44px;
         padding: 0 14px;
+        font-size: 12px;
     }
 
     .summary-grid {
@@ -905,6 +982,11 @@ input {
 
     .summary-card {
         min-height: 108px;
+        padding: 18px;
+    }
+
+    .summary-number {
+        font-size: 26px;
     }
 
     .panel-header {
@@ -912,6 +994,16 @@ input {
         align-items: flex-start;
         gap: 12px;
         padding: 18px;
+    }
+
+    .panel-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .action-button {
+        height: 44px;
+        font-size: 13px;
     }
 
     .alerts-list {
@@ -925,13 +1017,67 @@ input {
         gap: 12px;
     }
 
+    .alert-content p {
+        font-size: 13px;
+    }
+
     .alert-actions {
         grid-column: 1 / -1;
         justify-content: flex-end;
         margin-top: 6px;
     }
 
+    .alert-actions .icon-button {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+    }
+
+    .side-card {
+        padding: 20px;
+    }
+
+    .notice-card {
+        padding: 18px;
+    }
+}
+
+/* Ultra-small phones (320–400px) */
+@media (max-width: 400px) {
+
+    .main-nav a span {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: 22px;
+    }
+
+    .summary-card {
+        min-height: 100px;
+        padding: 16px;
+    }
+
+    .summary-number {
+        font-size: 24px;
+    }
+
+    .alert-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .alert-top h3 {
+        font-size: 14px;
+    }
+
     .alert-content p {
-        font-size: 13px;
+        font-size: 12.5px;
+    }
+
+    .alert-actions .icon-button {
+        width: 42px;
+        height: 42px;
     }
 }
