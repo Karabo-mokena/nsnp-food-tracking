@@ -767,6 +767,8 @@ a {
 .table-container {
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
 }
 
 table {
@@ -957,6 +959,7 @@ td strong {
     .dashboard-banner {
         min-height: 220px;
         padding: 28px;
+        background-position: 30% center;
     }
 
     .banner-content h1 {
@@ -966,9 +969,32 @@ td strong {
     .top-header .nav-item span {
         display: none;
     }
+
+    /* Bigger touch targets */
+    .deliver-button,
+    .delay-button {
+        min-height: 40px;
+        padding: 0 16px;
+        font-size: 13px;
+    }
+
+    .submit-button {
+        min-height: 50px;
+        font-size: 14px;
+    }
+
+    .header-bell,
+    .header-logout {
+        min-width: 40px;
+        min-height: 40px;
+    }
 }
 
 @media (max-width: 600px) {
+
+    body {
+        font-size: 16px;
+    }
 
     .top-header {
         height: 64px;
@@ -976,15 +1002,57 @@ td strong {
 
     .top-header .nav-container {
         padding: 0 12px;
+        gap: 8px;
     }
 
+    /* Keep nav visible and scrollable instead of hiding it */
     .top-header .main-nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1;
+    }
+
+    .top-header .main-nav::-webkit-scrollbar {
         display: none;
+    }
+
+    .top-header .nav-item {
+        padding: 0 10px;
+        min-height: 38px;
+    }
+
+    .top-header .nav-item span {
+        display: inline;
+        font-size: 12px;
     }
 
     .top-header .header-actions {
         width: auto;
+        gap: 4px;
         margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .top-header .header-bell,
+    .top-header .header-logout {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .top-header .profile-menu {
+        padding: 4px 8px 4px 4px;
+        gap: 6px;
+    }
+
+    .top-header .profile-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
     }
 
     .content {
@@ -992,12 +1060,13 @@ td strong {
     }
 
     .dashboard-banner {
-        min-height: 300px;
+        min-height: 260px;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-end;
         gap: 20px;
         padding: 24px;
+        background-position: 25% center;
     }
 
     .delivery-progress {
@@ -1006,7 +1075,7 @@ td strong {
     }
 
     .banner-content h1 {
-        font-size: 27px;
+        font-size: 26px;
     }
 
     .stats-grid {
@@ -1048,5 +1117,40 @@ td strong {
 
     .report-issue-button {
         width: 100%;
+    }
+
+    th {
+        font-size: 11px;
+    }
+
+    td {
+        font-size: 13px;
+    }
+
+    .stat-card h3 {
+        font-size: 28px;
+    }
+}
+
+/* Extra-small phones (iPhone SE 1st gen, older Androids) */
+@media (max-width: 380px) {
+
+    .top-header .nav-item span {
+        display: none;
+    }
+
+    .route-actions {
+        flex-direction: column;
+        gap: 6px;
+        margin-left: 0;
+    }
+
+    .deliver-button,
+    .delay-button {
+        width: 100%;
+    }
+
+    .banner-content h1 {
+        font-size: 22px;
     }
 }
