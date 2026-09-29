@@ -70,12 +70,12 @@ def send_email_async(subject, message, from_email, recipient_list):
                 message,
                 from_email,
                 recipient_list,
-                fail_silently=True,
+                fail_silently=False,
             )
 
-        except Exception:
+        except Exception as e:
 
-            pass
+            logger.error(f'EMAIL SEND FAILED: {e}')
 
     thread = threading.Thread(target=_send)
     thread.daemon = True
