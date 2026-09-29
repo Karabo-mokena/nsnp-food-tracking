@@ -520,12 +520,15 @@ input {
     background: #c9000c;
 }
 
-/* ============== SEARCH SECTION (FIXED) ============== */
+/* ============== SEARCH SECTION ============== */
 
+/* Force the search+filter and the image side-by-side on all screens
+   larger than 540px. The !important flags override any conflicting rules. */
 .inventory-search-section {
-    display: grid;
-    grid-template-columns: 1fr 260px;
-    height: 175px;
+    display: grid !important;
+    grid-template-columns: 1fr 260px !important;
+    grid-template-rows: 175px !important;
+    height: 175px !important;
     margin-bottom: 27px;
     overflow: hidden;
     border: 1px solid #e2eee8;
@@ -547,7 +550,8 @@ input {
 .search-area i {
     position: absolute;
     left: 28px;
-    top: 38px;
+    top: 50%;
+    transform: translateY(-40px);
     color: #b6c0ce;
     font-size: 18px;
     pointer-events: none;
@@ -597,7 +601,7 @@ input {
     color: #ffffff;
 }
 
-/* ============== STOCK IMAGE (FIXED - stays on the right) ============== */
+/* ============== STOCK IMAGE ============== */
 
 .stock-image {
     position: relative;
@@ -1251,24 +1255,27 @@ button.delete-button {
         width: calc(100% - 24px);
         margin-top: 20px;
     }
+
+    /* Narrow the image column slightly on tablets */
+    .inventory-search-section {
+        grid-template-columns: 1fr 220px !important;
+    }
 }
 
-/* Mobile — image goes below search */
-@media (max-width: 640px) {
+/* Phone — image goes below search (below 540px only) */
+@media (max-width: 540px) {
 
     .inventory-search-section {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 150px;
-        height: auto;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto 150px !important;
+        height: auto !important;
     }
 
     .search-area {
-        min-height: auto;
         padding: 20px;
     }
 
     .search-area i {
-        position: static;
         display: none;
     }
 
@@ -1353,7 +1360,7 @@ button.delete-button {
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
 
     .top-header {
         height: 64px;
