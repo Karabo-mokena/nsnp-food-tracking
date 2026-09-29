@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    overflow-x: hidden;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     background: #effaf5;
@@ -52,6 +57,7 @@ a {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .brand-logo img {
@@ -212,6 +218,7 @@ a {
     justify-content: center;
     font-size: 12px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .profile-name {
@@ -269,6 +276,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
     color: #ffffff;
 }
 
@@ -302,6 +310,8 @@ a {
     font-size: 15px;
     font-weight: 700;
     transition: 0.2s ease;
+    flex-shrink: 0;
+    min-height: 48px;
 }
 
 .add-user-button:hover {
@@ -442,6 +452,7 @@ a {
     justify-content: center;
     font-size: 12px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .driver-item:nth-child(3) .driver-avatar {
@@ -460,6 +471,9 @@ a {
     display: block;
     font-size: 15px;
     margin-bottom: 7px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .driver-progress {
@@ -524,11 +538,13 @@ a {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
 }
 
 .search-box i {
     color: #c5cfda;
     font-size: 19px;
+    flex-shrink: 0;
 }
 
 .search-box input {
@@ -555,6 +571,7 @@ a {
     font-size: 14px;
     outline: none;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .user-list {
@@ -593,6 +610,7 @@ a {
     justify-content: center;
     font-size: 14px;
     font-weight: 800;
+    flex-shrink: 0;
 }
 
 .user-card:nth-child(2n) .user-avatar { background: #ff9d00; }
@@ -617,6 +635,7 @@ a {
     font-size: 16px;
     font-weight: 750;
     color: #0f172a;
+    word-break: break-word;
 }
 
 .role-badge,
@@ -628,6 +647,7 @@ a {
     border-radius: 20px;
     font-size: 12px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .role-badge i {
@@ -672,6 +692,7 @@ a {
     font-size: 13px;
     margin-bottom: 7px;
     flex-wrap: wrap;
+    word-break: break-word;
 }
 
 .user-status {
@@ -692,6 +713,7 @@ a {
     min-width: 80px;
     text-align: center;
     margin-left: auto;
+    flex-shrink: 0;
 }
 
 .delivery-total strong {
@@ -715,14 +737,15 @@ a {
     align-items: center;
     gap: 7px;
     margin-left: 8px;
+    flex-shrink: 0;
 }
 
 .user-actions a,
 .user-actions button,
 .user-actions .action-form {
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -732,7 +755,7 @@ a {
     padding: 0;
     cursor: pointer;
     font-family: inherit;
-    font-size: inherit;
+    font-size: 15px;
     transition: 0.2s ease;
 }
 
@@ -790,6 +813,7 @@ a {
     justify-content: center;
     color: #94a3b8;
     text-align: center;
+    padding: 30px 20px;
 }
 
 .empty-users i {
@@ -870,7 +894,12 @@ a {
     }
 }
 
+/* Tablet / Large phone */
 @media (max-width: 760px) {
+
+    body {
+        font-size: 16px;
+    }
 
     .top-header {
         height: 64px;
@@ -878,19 +907,77 @@ a {
 
     .nav-container {
         width: calc(100% - 20px);
+        padding: 0 10px;
+        gap: 8px;
+    }
+
+    .brand {
+        min-width: 0;
+        flex-shrink: 0;
     }
 
     .brand-text {
         display: none;
     }
 
+    /* Keep nav visible and scrollable */
     .main-nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .main-nav::-webkit-scrollbar {
         display: none;
+    }
+
+    .nav-item {
+        padding: 0 10px;
+        min-height: 38px;
+        flex-shrink: 0;
+    }
+
+    .nav-item span {
+        display: inline;
+        font-size: 12px;
+    }
+
+    .nav-item i {
+        font-size: 16px;
     }
 
     .header-actions {
         width: auto;
+        gap: 4px;
         margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .header-bell,
+    .header-logout {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .profile-menu {
+        padding: 4px 8px 4px 4px;
+        gap: 6px;
+    }
+
+    .profile-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+    }
+
+    .profile-name {
+        display: none;
     }
 
     .page-container {
@@ -901,6 +988,7 @@ a {
     .hero {
         height: 250px;
         border-radius: 20px;
+        background-position: 25% center;
     }
 
     .hero-content {
@@ -919,8 +1007,13 @@ a {
         font-size: 15px;
     }
 
+    .hero-label {
+        font-size: 12px;
+    }
+
     .add-user-button {
-        padding: 11px 16px;
+        padding: 12px 18px;
+        min-height: 48px;
     }
 
     .stats-grid {
@@ -947,29 +1040,52 @@ a {
         flex-direction: column;
         align-items: stretch;
         padding: 14px;
+        gap: 10px;
     }
 
     .search-card select {
         width: 100%;
+        min-width: 0;
+        height: 48px;
+    }
+
+    .search-box input {
+        font-size: 16px;
     }
 
     .user-card {
         align-items: flex-start;
         flex-wrap: wrap;
         padding: 16px;
+        gap: 14px;
     }
 
     .user-details {
-        width: calc(100% - 70px);
+        width: calc(100% - 66px);
+        min-width: 0;
     }
 
     .delivery-total {
-        margin-left: 66px;
-        margin-right: auto;
+        margin-left: auto;
+        margin-right: 0;
+        min-width: 70px;
     }
 
     .user-actions {
-        margin-left: auto;
+        width: 100%;
+        margin-left: 0;
+        padding-left: 66px;
+        justify-content: flex-start;
+    }
+
+    /* Bigger touch targets */
+    .user-actions a,
+    .user-actions button,
+    .user-actions .action-form {
+        width: 44px;
+        height: 44px;
+        border-radius: 11px;
+        font-size: 16px;
     }
 }
 
@@ -979,12 +1095,20 @@ a {
         grid-template-columns: 1fr;
     }
 
+    .hero {
+        height: 240px;
+    }
+
     .hero h1 {
         font-size: 26px;
     }
 
     .hero-label {
-        font-size: 12px;
+        font-size: 11px;
+    }
+
+    .hero p {
+        font-size: 14px;
     }
 
     .user-name-row {
@@ -999,19 +1123,92 @@ a {
 
     .user-card {
         gap: 12px;
+        padding: 14px;
     }
 
     .user-avatar {
         width: 43px;
         height: 43px;
         min-width: 43px;
+        font-size: 13px;
     }
 
     .user-details {
         width: calc(100% - 55px);
     }
 
+    .user-actions {
+        padding-left: 55px;
+        gap: 8px;
+    }
+
     .delivery-total {
-        margin-left: 55px;
+        margin-left: auto;
+    }
+
+    .drivers-card {
+        padding: 20px;
+    }
+
+    .driver-item {
+        max-width: none;
+    }
+}
+
+/* Ultra-small phones (320–360px) */
+@media (max-width: 360px) {
+
+    .nav-item span {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: 22px;
+    }
+
+    .hero p {
+        font-size: 13px;
+    }
+
+    .stat-number {
+        font-size: 24px;
+    }
+
+    .user-card {
+        padding: 12px;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 12px;
+    }
+
+    .user-details {
+        width: calc(100% - 52px);
+    }
+
+    .user-actions {
+        padding-left: 52px;
+        gap: 6px;
+    }
+
+    .user-actions a,
+    .user-actions button,
+    .user-actions .action-form {
+        width: 42px;
+        height: 42px;
+    }
+
+    .driver-item {
+        grid-template-columns: 22px 34px 1fr 30px;
+        gap: 7px;
+    }
+
+    .driver-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 11px;
     }
 }
