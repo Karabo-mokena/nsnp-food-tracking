@@ -4,6 +4,11 @@
     padding: 0;
 }
 
+html,
+body {
+    overflow-x: hidden;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #f0faf6;
@@ -56,6 +61,7 @@ input {
     align-items: center;
     justify-content: center;
     background: #08ad50;
+    flex-shrink: 0;
 }
 
 .brand-logo img {
@@ -214,6 +220,7 @@ input {
     justify-content: center;
     font-size: 12px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .profile-name {
@@ -513,11 +520,13 @@ input {
     background: #c9000c;
 }
 
+/* ============== SEARCH SECTION ============== */
+
 .inventory-search-section {
     min-height: 175px;
     margin-bottom: 27px;
     display: grid;
-    grid-template-columns: 1fr 310px;
+    grid-template-columns: 1fr 260px;
     overflow: hidden;
     border: 1px solid #e2eee8;
     border-radius: 18px;
@@ -590,16 +599,22 @@ input {
     color: #ffffff;
 }
 
+/* ============== STOCK IMAGE (FIXED - small & capped) ============== */
+
 .stock-image {
     position: relative;
-    min-height: 175px;
+    height: 175px;
+    max-height: 175px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .stock-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    display: block;
 }
 
 .stock-image-overlay {
@@ -620,6 +635,8 @@ input {
     color: #ffffff;
     font-size: 13px;
 }
+
+/* ============== INVENTORY PANEL ============== */
 
 .inventory-panel {
     overflow: hidden;
@@ -734,6 +751,7 @@ th {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .5px;
+    white-space: nowrap;
 }
 
 td {
@@ -1168,7 +1186,6 @@ button.delete-button {
         min-width: 0;
     }
 
-    /* Keep nav visible and scrollable on mobile */
     .main-nav {
         display: flex;
         justify-content: flex-start;
@@ -1242,8 +1259,7 @@ button.delete-button {
 @media (max-width: 640px) {
 
     .inventory-search-section {
-        display: flex;
-        flex-direction: column;
+        grid-template-columns: 1fr;
     }
 
     .search-area {
@@ -1279,8 +1295,11 @@ button.delete-button {
         font-size: 13px;
     }
 
+    /* Stock image stays small on mobile too */
     .stock-image {
-        min-height: 150px;
+        height: 150px;
+        max-height: 150px;
+        width: 100%;
     }
 
     .modal-overlay {
@@ -1472,5 +1491,10 @@ button.delete-button {
     .filter-button {
         padding: 0 10px;
         font-size: 12px;
+    }
+
+    .stock-image {
+        height: 130px;
+        max-height: 130px;
     }
 }
