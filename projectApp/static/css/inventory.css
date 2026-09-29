@@ -520,13 +520,13 @@ input {
     background: #c9000c;
 }
 
-/* ============== SEARCH SECTION ============== */
+/* ============== SEARCH SECTION (FIXED) ============== */
 
 .inventory-search-section {
-    min-height: 175px;
-    margin-bottom: 27px;
     display: grid;
     grid-template-columns: 1fr 260px;
+    height: 175px;
+    margin-bottom: 27px;
     overflow: hidden;
     border: 1px solid #e2eee8;
     border-radius: 18px;
@@ -536,18 +536,18 @@ input {
 
 .search-area {
     position: relative;
-    min-height: 175px;
-    padding: 25px 30px 80px;
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    padding: 25px 30px;
     gap: 16px;
+    min-width: 0;
 }
 
 .search-area i {
     position: absolute;
     left: 28px;
-    top: 50px;
+    top: 38px;
     color: #b6c0ce;
     font-size: 18px;
     pointer-events: none;
@@ -562,8 +562,6 @@ input {
     background: transparent;
     color: #344054;
     font-size: 14px;
-    align-self: flex-start;
-    margin-top: 25px;
 }
 
 .search-area input::placeholder {
@@ -599,14 +597,13 @@ input {
     color: #ffffff;
 }
 
-/* ============== STOCK IMAGE (FIXED - small & capped) ============== */
+/* ============== STOCK IMAGE (FIXED - stays on the right) ============== */
 
 .stock-image {
     position: relative;
+    width: 100%;
     height: 175px;
-    max-height: 175px;
     overflow: hidden;
-    flex-shrink: 0;
 }
 
 .stock-image img {
@@ -1256,28 +1253,27 @@ button.delete-button {
     }
 }
 
+/* Mobile — image goes below search */
 @media (max-width: 640px) {
 
     .inventory-search-section {
         grid-template-columns: 1fr;
+        grid-template-rows: auto 150px;
+        height: auto;
     }
 
     .search-area {
         min-height: auto;
         padding: 20px;
-        flex-direction: column;
-        align-items: stretch;
     }
 
     .search-area i {
         position: static;
-        margin-bottom: 0;
         display: none;
     }
 
     .search-area input {
         padding: 0 16px;
-        margin-top: 0;
         background: #f5f7f9;
         border-radius: 10px;
         height: 48px;
@@ -1285,7 +1281,6 @@ button.delete-button {
     }
 
     .filter-buttons {
-        padding: 0;
         width: 100%;
     }
 
@@ -1295,11 +1290,8 @@ button.delete-button {
         font-size: 13px;
     }
 
-    /* Stock image stays small on mobile too */
     .stock-image {
         height: 150px;
-        max-height: 150px;
-        width: 100%;
     }
 
     .modal-overlay {
@@ -1495,6 +1487,5 @@ button.delete-button {
 
     .stock-image {
         height: 130px;
-        max-height: 130px;
     }
 }
