@@ -7,10 +7,14 @@ from django.http import HttpResponse
 from datetime import timedelta
 from datetime import datetime
 import csv
-import threading 
+import logging
+import threading
 from io import BytesIO
 
 from .models import UserProfile, Delivery, Issue, Notification, Inventory
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_logged_in_user(request):
@@ -30,6 +34,7 @@ def get_logged_in_user(request):
         return None
 
     return user
+
 
 def check_and_alert_low_stock(inventory_item, school_name):
 
@@ -59,27 +64,21 @@ def check_and_alert_low_stock(inventory_item, school_name):
                     message=f'Low stock alert: {inventory_item.food_item} at {school_name} is at {inventory_item.quantity} units (minimum: {inventory_item.minimum_stock}, short by {shortfall}).',
                     notification_type='alert'
                 )
+
+
 def send_email_async(subject, message, from_email, recipient_list):
+    """
+    Email sending is disabled in this deployment.
 
-    def _send():
-
-        try:
-
-            send_mail(
-                subject,
-                message,
-                from_email,
-                recipient_list,
-                fail_silently=False,
-            )
-
-        except Exception as e:
-
-            logger.error(f'EMAIL SEND FAILED: {e}')
-
-    thread = threading.Thread(target=_send)
-    thread.daemon = True
-    thread.start()         
+    Render's free tier blocks outbound SMTP traffic on port 587,
+    so Gmail SMTP cannot be reached. Emails are logged instead of sent.
+    """
+    logger.info(
+        'EMAIL DISABLED — would have sent "%s" to %s',
+        subject,
+        recipient_list
+    )
+    return
 
 
 def login_view(request):
@@ -120,6 +119,7 @@ def login_view(request):
             })
 
     return render(request, 'projectApp/login.html')
+
 
 def register_view(request):
 
@@ -172,26 +172,27 @@ def register_view(request):
             status=initial_status
         )
 
-        send_email_async(
-            'NSNP Registration Received',
-            f'''Hello {new_user.full_name},
-
-Thank you for registering for the National School Nutrition Programme Food Tracking System.
-
-We have received your registration request.
-
-Your account is now pending review by a programme manager. You will receive a follow-up email once your request has been approved or declined.
-
-If you have any questions in the meantime, please contact your programme administrator.
-
-Thank you for your interest.
-
-Kind regards,
-NSNP Food Tracking System
-''',
-            'nsnpfoodtracking@gmail.com',
-            [new_user.email],
-        )
+        # Email sending disabled — Render free tier blocks SMTP
+        # send_email_async(
+        #     'NSNP Registration Received',
+        #     f'''Hello {new_user.full_name},
+        #
+        # Thank you for registering for the National School Nutrition Programme Food Tracking System.
+        #
+        # We have received your registration request.
+        #
+        # Your account is now pending review by a programme manager. You will receive a follow-up email once your request has been approved or declined.
+        #
+        # If you have any questions in the meantime, please contact your programme administrator.
+        #
+        # Thank you for your interest.
+        #
+        # Kind regards,
+        # NSNP Food Tracking System
+        # ''',
+        #     'nsnpfoodtracking@gmail.com',
+        #     [new_user.email],
+        # )
 
         if is_first_manager:
             return render(request, 'projectApp/login.html', {
@@ -199,10 +200,11 @@ NSNP Food Tracking System
             })
 
         return render(request, 'projectApp/login.html', {
-            'success': 'Registration submitted successfully. Your account is waiting for manager approval. A confirmation email has been sent.'
+            'success': 'Registration submitted successfully. Your account is waiting for manager approval.'
         })
 
     return render(request, 'projectApp/register.html')
+
 
 def approve_user_view(request, user_id):
 
@@ -225,40 +227,42 @@ def approve_user_view(request, user_id):
         account.status = 'Approved'
         account.save()
 
-        send_mail(
-            'NSNP Account Approved — You Can Now Sign In',
-            f'''Hello {account.full_name},
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  NSNP FOOD TRACKING SYSTEM
-  Account Approved
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Great news! Your registration for the National School Nutrition Programme Food Tracking System has been approved.
-
-► Your Access Details
-  Username: {account.username}
-  Role: {account.role.replace("_", " ").title()}
-
-► Next Steps
-  1. Visit the login page: http://127.0.0.1:8000/
-  2. Sign in with your username and password.
-  3. You will be taken to your role-specific dashboard.
-
-If you have any questions, please contact your programme administrator.
-
-Welcome aboard!
-
-Kind regards,
-NSNP Food Tracking System
-Department of Basic Education · South Africa
-''',
-            'nsnpfoodtracking@gmail.com',
-            [account.email],
-            fail_silently=True
-        )
+        # Email sending disabled — Render free tier blocks SMTP
+        # send_mail(
+        #     'NSNP Account Approved — You Can Now Sign In',
+        #     f'''Hello {account.full_name},
+        #
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        #   NSNP FOOD TRACKING SYSTEM
+        #   Account Approved
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        #
+        # Great news! Your registration for the National School Nutrition Programme Food Tracking System has been approved.
+        #
+        # ► Your Access Details
+        #   Username: {account.username}
+        #   Role: {account.role.replace("_", " ").title()}
+        #
+        # ► Next Steps
+        #   1. Visit the login page: http://127.0.0.1:8000/
+        #   2. Sign in with your username and password.
+        #   3. You will be taken to your role-specific dashboard.
+        #
+        # If you have any questions, please contact your programme administrator.
+        #
+        # Welcome aboard!
+        #
+        # Kind regards,
+        # NSNP Food Tracking System
+        # Department of Basic Education · South Africa
+        # ''',
+        #     'nsnpfoodtracking@gmail.com',
+        #     [account.email],
+        #     fail_silently=True
+        # )
 
     return redirect('/user-management/')
+
 
 def reject_user_view(request, user_id):
 
@@ -281,20 +285,21 @@ def reject_user_view(request, user_id):
         account.status = 'Rejected'
         account.save()
 
-        send_mail(
-            'NSNP Registration Update',
-            f'''Hello {account.full_name},
-
-Thank you for registering for the National School Nutrition Programme Food Tracking System.
-
-Your registration request has not been approved at this time.
-
-Thank you.
-''',
-            'nsnpfoodtracking@gmail.com',
-            [account.email],
-            fail_silently=True
-        )
+        # Email sending disabled — Render free tier blocks SMTP
+        # send_mail(
+        #     'NSNP Registration Update',
+        #     f'''Hello {account.full_name},
+        #
+        # Thank you for registering for the National School Nutrition Programme Food Tracking System.
+        #
+        # Your registration request has not been approved at this time.
+        #
+        # Thank you.
+        # ''',
+        #     'nsnpfoodtracking@gmail.com',
+        #     [account.email],
+        #     fail_silently=True
+        # )
 
     return redirect('/user-management/')
 
@@ -360,7 +365,7 @@ def dashboard_view(request):
 
                 if quantity > 0:
 
-                 Delivery.objects.create(
+                    Delivery.objects.create(
                         school=school.strip() if school else '',
                         food_item=food_item.strip() if food_item else '',
                         quantity=quantity,
@@ -369,13 +374,13 @@ def dashboard_view(request):
                         status='Pending'
                     )
 
-                 Notification.objects.create(
+                    Notification.objects.create(
                         user=user,
                         message=f'Delivery to {school} logged successfully.',
                         notification_type='delivery'
                     )
 
-                 return redirect('/dashboard/')
+                    return redirect('/dashboard/')
 
             except (ValueError, TypeError):
                 pass
@@ -408,6 +413,7 @@ def dashboard_view(request):
         'issues': issues,
         'unread_notifications': unread_notifications
     })
+
 
 def update_delivery_status_view(request, delivery_id):
 
@@ -484,6 +490,7 @@ def update_delivery_status_view(request, delivery_id):
                 )
 
     return redirect('/dashboard/')
+
 
 def manager_dashboard_view(request):
 
@@ -729,11 +736,14 @@ def manager_dashboard_view(request):
     }
 
     return render(request, 'projectApp/manager_dashboard.html', context)
+
+
 def logout_view(request):
 
     request.session.flush()
 
     return redirect('/')
+
 
 def create_delivery_view(request):
 
@@ -755,7 +765,7 @@ def create_delivery_view(request):
     if request.method == 'POST':
 
         school = request.POST.get('school')
-        district = request.POST.get('district')            # 👈 ADD
+        district = request.POST.get('district')
         food_item = request.POST.get('food_item')
         quantity = request.POST.get('quantity')
         delivery_date = request.POST.get('delivery_date')
@@ -774,10 +784,10 @@ def create_delivery_view(request):
                 id=driver_id,
                 role__in=['driver', 'delivery_driver']
             )
-            
+
             Delivery.objects.create(
                 school=school.strip() if school else '',
-                district=district.strip() if district else 'Capricorn',  # 👈 ADD
+                district=district.strip() if district else 'Capricorn',
                 food_item=food_item.strip() if food_item else '',
                 quantity=quantity,
                 delivery_date=delivery_date,
@@ -837,6 +847,7 @@ def create_delivery_view(request):
             'error': error_message
         }
     )
+
 
 def school_staff_view(request):
 
@@ -1036,6 +1047,7 @@ def school_staff_view(request):
 
     return render(request, 'projectApp/school_staff.html', context)
 
+
 def report_issue_view(request):
 
     user = get_logged_in_user(request)
@@ -1191,6 +1203,7 @@ def report_issue_view(request):
             'today': timezone.localdate()
         }
     )
+
 
 def update_issue_status_view(request, issue_id):
 
@@ -1370,6 +1383,7 @@ def reports_view(request):
             'unread_notifications': unread_notifications
         }
     )
+
 
 def download_report_view(request):
 
@@ -1631,6 +1645,7 @@ def download_report_view(request):
 
     return redirect('/reports/')
 
+
 def notifications_view(request):
 
     user = get_logged_in_user(request)
@@ -1747,6 +1762,7 @@ def notifications_view(request):
         context
     )
 
+
 def user_management_view(request):
 
     user = get_logged_in_user(request)
@@ -1816,6 +1832,7 @@ def user_management_view(request):
         'projectApp/user_management.html',
         context
     )
+
 
 def inventory_view(request):
 
@@ -1977,6 +1994,7 @@ def inventory_view(request):
             'error': error_message
         }
     )
+
 
 def edit_inventory_view(request, inventory_id):
 
@@ -2144,4 +2162,3 @@ def delete_user_view(request, user_id):
         account.delete()
 
     return redirect('/user-management/')
-
