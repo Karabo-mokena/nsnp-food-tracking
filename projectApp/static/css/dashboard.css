@@ -21,6 +21,8 @@ body {
     display: flex;
     flex-direction: column;
     z-index: 100;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .brand {
@@ -30,6 +32,7 @@ body {
     align-items: center;
     gap: 13px;
     border-bottom: 1px solid #edf0f2;
+    flex-shrink: 0;
 }
 
 .brand img {
@@ -72,6 +75,7 @@ body {
     border-radius: 9px;
     font-size: 14px;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .menu a span {
@@ -79,6 +83,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .menu a i {
@@ -108,12 +113,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .logout {
     margin-top: auto;
     padding: 16px 12px;
     border-top: 1px solid #edf0f2;
+    flex-shrink: 0;
 }
 
 .logout a {
@@ -126,6 +133,7 @@ body {
     text-decoration: none;
     border-radius: 9px;
     font-size: 14px;
+    white-space: nowrap;
 }
 
 .logout a:hover {
@@ -137,6 +145,7 @@ body {
     width: 20px;
     display: flex;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .main {
@@ -152,6 +161,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
 }
 
 header h2 {
@@ -170,6 +180,7 @@ header h2 {
     display: flex;
     align-items: center;
     gap: 20px;
+    flex-shrink: 0;
 }
 
 .bell {
@@ -221,6 +232,7 @@ header h2 {
     justify-content: center;
     font-size: 13px;
     font-weight: 600;
+    flex-shrink: 0;
 }
 
 .content {
@@ -270,6 +282,7 @@ header h2 {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.025);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -305,6 +318,7 @@ header h2 {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .card-icon i {
@@ -358,6 +372,7 @@ header h2 {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 12px;
 }
 
 .section-header {
@@ -392,6 +407,7 @@ header h2 {
     color: #087a2f;
     font-size: 10px;
     font-weight: 600;
+    flex-shrink: 0;
 }
 
 .route-list {
@@ -409,6 +425,7 @@ header h2 {
     border-radius: 10px;
     background: #f8fafb;
     border: 1px solid transparent;
+    flex-wrap: wrap;
 }
 
 .route-item:hover {
@@ -440,6 +457,7 @@ header h2 {
     display: flex;
     justify-content: space-between;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .route-top strong {
@@ -459,6 +477,7 @@ header h2 {
     margin-top: 6px;
     color: #7b8794;
     font-size: 11px;
+    flex-wrap: wrap;
 }
 
 .route-info span {
@@ -610,11 +629,13 @@ header h2 {
     color: #66727f;
     font-size: 10px;
     font-weight: 600;
+    flex-shrink: 0;
 }
 
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -705,6 +726,8 @@ tbody tr:hover {
     font-size: 12px;
 }
 
+/* ============== RESPONSIVE ============== */
+
 @media (max-width: 1200px) {
 
     .cards {
@@ -714,10 +737,9 @@ tbody tr:hover {
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
-
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
     .sidebar {
         width: 210px;
@@ -735,22 +757,104 @@ tbody tr:hover {
         padding: 22px;
     }
 
+    .brand {
+        padding: 18px;
+    }
+
+    .brand strong {
+        font-size: 16px;
+    }
+
+    .menu a,
+    .logout a {
+        font-size: 13px;
+    }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 700px) {
+
+    header {
+        height: auto;
+        min-height: 82px;
+        padding: 16px 20px;
+        flex-wrap: wrap;
+    }
+
+    header h2 {
+        font-size: 18px;
+    }
+
+    .welcome {
+        font-size: 12px;
+    }
+
+    .content {
+        padding: 18px 16px 32px;
+    }
+
+    .card {
+        min-height: 130px;
+        padding: 18px;
+    }
+
+    .card h3 {
+        font-size: 24px;
+    }
+
+    .section-header,
+    .form-heading,
+    .history-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .route-box,
+    .delivery-box {
+        padding: 20px;
+    }
+
+    .history-header {
+        padding: 18px 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Bigger touch targets */
+    .delivery-box select,
+    .delivery-box input {
+        height: 48px;
+        font-size: 14px;
+    }
+
+    .delivery-box button {
+        height: 50px;
+        font-size: 14px;
+    }
+
+    .bell {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+/* Sidebar collapses to icon rail on phones */
+@media (max-width: 600px) {
 
     .sidebar {
-        width: 70px;
+        width: 68px;
+    }
+
+    .main {
+        margin-left: 68px;
     }
 
     .brand {
+        padding: 14px 8px;
         justify-content: center;
-        padding: 15px;
-    }
-
-    .brand div,
-    .menu a {
-        font-size: 0;
+        height: 76px;
     }
 
     .brand img {
@@ -758,53 +862,124 @@ tbody tr:hover {
         height: 36px;
     }
 
-    .menu a,
-    .logout a {
-        justify-content: center;
+    .brand div {
+        display: none;
+    }
+
+    .menu {
+        padding: 16px 8px;
+    }
+
+    .menu a {
+        height: 44px;
         padding: 0;
+        justify-content: center;
+        gap: 0;
+        font-size: 0;   /* hide text */
+        position: relative;
     }
 
-    .menu a span,
-    .logout a span {
+    .menu a span {
+        font-size: 16px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .menu a i {
+        font-size: 18px;
+    }
+
+    .notification-number {
+        position: absolute;
+        top: 4px;
+        right: 6px;
         margin: 0;
+        width: 16px !important;
+        height: 16px;
+        font-size: 9px;
     }
 
-    .menu a i,
+    .logout {
+        padding: 12px 8px;
+    }
+
+    .logout a {
+        height: 44px;
+        padding: 0;
+        justify-content: center;
+        gap: 0;
+        font-size: 0;
+    }
+
+    .logout a span {
+        font-size: 16px;
+        width: 100%;
+        justify-content: center;
+    }
+
     .logout a i {
-        font-size: 17px;
-    }
-
-    .main {
-        margin-left: 70px;
+        font-size: 18px;
     }
 
     .cards {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .form-row {
-        grid-template-columns: 1fr;
+    .header-right {
+        gap: 12px;
+    }
+}
+
+/* Ultra-small phones */
+@media (max-width: 400px) {
+
+    .sidebar {
+        width: 60px;
+    }
+
+    .main {
+        margin-left: 60px;
     }
 
     header {
-        height: 82px;
+        padding: 14px 14px;
     }
 
     header h2 {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .content {
-        padding: 18px;
+        padding: 14px 12px 28px;
     }
 
-    .route-top {
-        flex-direction: column;
-        gap: 4px;
+    .card {
+        padding: 16px;
     }
 
-    .route-status {
-        display: none;
+    .card h3 {
+        font-size: 22px;
     }
 
+    .card-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .profile {
+        width: 38px;
+        height: 38px;
+        font-size: 12px;
+    }
+
+    .bell {
+        width: 38px;
+        height: 38px;
+    }
+
+    .route-box,
+    .delivery-box {
+        padding: 16px;
+    }
 }
