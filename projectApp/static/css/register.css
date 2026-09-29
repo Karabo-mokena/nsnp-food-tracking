@@ -4,17 +4,23 @@
     padding: 0;
 }
 
+html,
+body {
+    overflow-x: hidden;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #ffffff;
     color: #111827;
 }
 
+/* ============== PAGE LAYOUT ============== */
 
 .register-page {
     min-height: 100vh;
     display: flex;
-    align-items: stretch;      
+    align-items: stretch;
 }
 
 .register-image-panel {
@@ -25,7 +31,7 @@ body {
     background-image: url("../images/register-bg.jpg");
     background-size: cover;
     background-position: center;
-    align-self: stretch;        
+    align-self: stretch;
 }
 
 .register-image-overlay {
@@ -59,6 +65,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .register-brand-icon img {
@@ -132,6 +139,8 @@ body {
     font-size: 15px;
 }
 
+/* ============== FORM PANEL ============== */
+
 .register-form-panel {
     flex: 1;
     min-width: 0;
@@ -157,6 +166,7 @@ body {
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
+    min-height: 40px;
 }
 
 .back-link a:hover {
@@ -196,6 +206,7 @@ body {
     border-radius: 9px;
     font-size: 13px;
     line-height: 1.5;
+    word-wrap: break-word;
 }
 
 .error {
@@ -207,6 +218,7 @@ body {
 .error i {
     color: #ef4444;
     margin-top: 1px;
+    flex-shrink: 0;
 }
 
 .success {
@@ -218,7 +230,10 @@ body {
 .success i {
     color: #22c55e;
     margin-top: 1px;
+    flex-shrink: 0;
 }
+
+/* ============== FORM SECTIONS ============== */
 
 .form-section {
     margin-bottom: 27px;
@@ -287,6 +302,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 15px;
+    transition: 0.2s ease;
 }
 
 .role-option input:checked + .role-card .role-icon {
@@ -315,6 +331,8 @@ body {
 .role-option input:checked + .role-card .role-content p {
     color: #16a34a;
 }
+
+/* ============== FORM INPUTS ============== */
 
 .form-row {
     display: grid;
@@ -362,6 +380,8 @@ body {
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
 
+/* ============== REGISTRATION NOTE ============== */
+
 .registration-note {
     display: flex;
     align-items: flex-start;
@@ -377,6 +397,7 @@ body {
 .registration-note > i {
     margin-top: 2px;
     font-size: 15px;
+    flex-shrink: 0;
 }
 
 .registration-note strong {
@@ -391,6 +412,8 @@ body {
     font-size: 11px;
     line-height: 1.5;
 }
+
+/* ============== SUBMIT BUTTON ============== */
 
 .register-button {
     width: 100%;
@@ -420,6 +443,8 @@ body {
     font-size: 15px;
 }
 
+/* ============== BOTTOM LINKS ============== */
+
 .login-link {
     display: flex;
     justify-content: center;
@@ -428,6 +453,7 @@ body {
     margin-top: 22px;
     color: #94a3b8;
     font-size: 12px;
+    flex-wrap: wrap;
 }
 
 .login-link a {
@@ -457,6 +483,8 @@ body {
     margin-left: 8px;
 }
 
+/* ============== RESPONSIVE ============== */
+
 @media (max-width: 1150px) {
 
     .register-image-panel {
@@ -481,7 +509,6 @@ body {
         padding-left: 45px;
         padding-right: 45px;
     }
-
 }
 
 @media (max-width: 900px) {
@@ -519,31 +546,47 @@ body {
         margin-bottom: 0;
         flex-shrink: 0;
     }
-
 }
 
 @media (max-width: 700px) {
 
+    /* Stack vertically */
     .register-page {
         display: block;
-        overflow: visible;
+        min-height: auto;
     }
 
+    /* Smaller, more flexible image header */
     .register-image-panel {
         width: 100%;
         min-width: 0;
-        height: 300px;
+        height: 280px;
+        max-height: 42vh;
     }
 
     .register-brand {
-        top: 25px;
-        left: 25px;
+        top: 22px;
+        left: 22px;
+    }
+
+    .register-brand-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .register-brand-icon img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .register-brand-text strong {
+        font-size: 16px;
     }
 
     .register-image-content {
-        left: 25px;
-        right: 25px;
-        bottom: 28px;
+        left: 22px;
+        right: 22px;
+        bottom: 24px;
     }
 
     .register-image-label {
@@ -551,24 +594,24 @@ body {
     }
 
     .register-image-content h1 {
-        font-size: 29px;
-        margin-bottom: 9px;
+        font-size: 27px;
+        margin-bottom: 8px;
     }
 
     .register-image-content p {
-        max-width: 500px;
+        max-width: 100%;
         font-size: 12px;
         line-height: 1.5;
     }
 
     .register-location {
-        margin-top: 12px;
+        margin-top: 10px;
+        font-size: 12px;
     }
 
+    /* Form panel */
     .register-form-panel {
-        min-height: auto;
-        padding: 30px 20px 40px;
-        overflow: visible;
+        padding: 28px 20px 40px;
     }
 
     .register-form-container {
@@ -576,13 +619,18 @@ body {
     }
 
     .back-link {
-        margin-bottom: 25px;
+        margin-bottom: 22px;
     }
 
     .register-heading h1 {
-        font-size: 25px;
+        font-size: 24px;
     }
 
+    .register-heading p {
+        font-size: 13px;
+    }
+
+    /* Forms stack to 1 column */
     .form-row {
         grid-template-columns: 1fr;
         gap: 0;
@@ -593,52 +641,166 @@ body {
         margin-bottom: 18px;
     }
 
+    /* Bigger touch targets */
+    .form-group input {
+        height: 50px;
+        font-size: 15px;
+    }
+
+    .register-button {
+        height: 54px;
+        font-size: 14px;
+    }
+
+    .role-card {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .role-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 17px;
+    }
+
+    .role-content h3 {
+        font-size: 14px;
+    }
+
+    .role-content p {
+        font-size: 12px;
+    }
+
+    .registration-note {
+        padding: 12px;
+    }
+
+    .registration-note strong {
+        font-size: 13px;
+    }
+
+    .registration-note p {
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 480px) {
 
     .register-image-panel {
-        height: 270px;
+        height: 240px;
+        max-height: 38vh;
     }
 
     .register-brand {
-        top: 20px;
-        left: 20px;
+        top: 16px;
+        left: 16px;
+    }
+
+    .register-brand-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .register-brand-icon img {
+        width: 26px;
+        height: 26px;
+    }
+
+    .register-brand-text strong {
+        font-size: 15px;
+    }
+
+    .register-brand-text span {
+        font-size: 11px;
     }
 
     .register-image-content {
-        left: 20px;
-        right: 20px;
-        bottom: 22px;
+        left: 16px;
+        right: 16px;
+        bottom: 18px;
     }
 
     .register-image-content h1 {
-        font-size: 26px;
+        font-size: 22px;
+    }
+
+    .register-image-content p {
+        font-size: 11.5px;
+        line-height: 1.45;
+    }
+
+    .register-form-panel {
+        padding: 24px 16px 32px;
+    }
+
+    .register-heading {
+        margin-bottom: 24px;
+    }
+
+    .register-heading h1 {
+        font-size: 21px;
+    }
+
+    .register-heading p {
+        font-size: 12.5px;
+    }
+
+    .form-group input {
+        height: 48px;
+        font-size: 14px;
+    }
+
+    .register-button {
+        height: 52px;
+        font-size: 13px;
+    }
+
+    .login-link {
+        font-size: 11.5px;
+    }
+
+    .register-footer {
+        flex-direction: column;
+        gap: 4px;
+        font-size: 10px;
+    }
+
+    .register-footer span:first-child::after {
+        display: none;
+    }
+}
+
+/* Ultra-small phones (320px) */
+@media (max-width: 360px) {
+
+    .register-image-panel {
+        height: 220px;
+    }
+
+    .register-image-content h1 {
+        font-size: 20px;
     }
 
     .register-image-content p {
         font-size: 11px;
     }
 
-    .register-form-panel {
-        padding: 25px 16px 35px;
-    }
-
     .register-heading h1 {
-        font-size: 23px;
+        font-size: 19px;
     }
 
-    .register-heading p {
-        font-size: 13px;
+    .form-group input,
+    .register-button {
+        height: 48px;
     }
 
-    .register-footer {
-        flex-direction: column;
-        gap: 4px;
+    .role-card {
+        padding: 12px;
     }
 
-    .register-footer span:first-child::after {
-        display: none;
+    .role-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 15px;
     }
-
 }
