@@ -4,6 +4,11 @@
     padding: 0;
 }
 
+html,
+body {
+    overflow-x: hidden;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #f7f8fc;
@@ -48,6 +53,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .brand-logo img {
@@ -209,6 +215,7 @@ body {
     justify-content: center;
     font-size: 12px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .profile-name {
@@ -310,6 +317,7 @@ body {
     color: #ffffff;
     font-size: 12px;
     font-weight: 600;
+    flex-shrink: 0;
 }
 
 .hero-status i {
@@ -521,13 +529,13 @@ body {
 
 .format-button {
     flex: 1;
-    height: 40px;
+    height: 44px;
     border: 1px solid #e5e7eb;
     border-radius: 9px;
     background: #f8fafc;
     color: #6b7280;
     font-family: Arial, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     transition: .2s ease;
@@ -547,7 +555,7 @@ body {
 
 .generate-button {
     width: 100%;
-    min-height: 43px;
+    min-height: 48px;
     margin-top: 3px;
     border: none;
     border-radius: 10px;
@@ -558,7 +566,7 @@ body {
     justify-content: center;
     gap: 8px;
     font-family: Arial, sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: .2s ease;
@@ -651,6 +659,7 @@ body {
     display: flex;
     align-items: center;
     gap: 9px;
+    flex-shrink: 0;
 }
 
 .format-label {
@@ -663,8 +672,8 @@ body {
 }
 
 .download-button {
-    min-height: 32px;
-    padding: 0 10px;
+    min-height: 38px;
+    padding: 0 14px;
     border: none;
     border-radius: 8px;
     background: #f5f3ff;
@@ -673,7 +682,7 @@ body {
     align-items: center;
     gap: 6px;
     font-family: Arial, sans-serif;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     cursor: pointer;
     transition: .2s ease;
@@ -768,6 +777,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .statistics-icon i {
@@ -868,13 +878,14 @@ body {
     .charts-grid {
         grid-template-columns: 1fr;
     }
-
-    .hero-status {
-        display: none;
-    }
 }
 
+/* Tablet / Large phone */
 @media (max-width: 700px) {
+
+    body {
+        font-size: 16px;
+    }
 
     .top-header {
         height: 64px;
@@ -882,19 +893,77 @@ body {
 
     .nav-container {
         width: calc(100% - 20px);
+        padding: 0 10px;
+        gap: 8px;
+    }
+
+    .brand {
+        width: auto;
+        flex-shrink: 0;
+        min-width: 0;
     }
 
     .brand-text {
         display: none;
     }
 
+    /* Keep nav visible and scrollable */
     .main-nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .main-nav::-webkit-scrollbar {
         display: none;
+    }
+
+    .nav-item {
+        padding: 0 10px;
+        min-height: 38px;
+        flex-shrink: 0;
+    }
+
+    .nav-item span {
+        display: inline;
+        font-size: 12px;
+    }
+
+    .nav-item i {
+        font-size: 16px;
     }
 
     .header-actions {
         width: auto;
-        margin-left: auto;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .header-bell,
+    .header-logout {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .profile-menu {
+        padding: 4px 8px 4px 4px;
+        gap: 6px;
+    }
+
+    .profile-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+    }
+
+    .profile-name {
+        display: none;
     }
 
     .page-container {
@@ -909,14 +978,38 @@ body {
 
     .hero-content {
         padding: 23px;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+        gap: 14px;
     }
 
     .hero-text h1 {
         font-size: 25px;
     }
 
+    .hero-status {
+        min-height: 40px;
+        font-size: 11px;
+        padding: 0 12px;
+    }
+
     .summary-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .summary-card {
+        min-height: 120px;
+        padding: 18px;
+    }
+
+    .chart-card {
+        padding: 18px;
+    }
+
+    .chart-container {
+        height: 230px;
     }
 
     .date-fields {
@@ -927,14 +1020,39 @@ body {
         padding: 19px;
     }
 
-    .report-item {
-        align-items: flex-start;
-        flex-wrap: wrap;
+    /* Bigger touch targets */
+    .input-wrapper select,
+    .input-wrapper input {
+        height: 48px;
+        font-size: 14px;
     }
 
+    .format-button {
+        height: 48px;
+        font-size: 13px;
+    }
+
+    .generate-button {
+        min-height: 52px;
+        font-size: 14px;
+    }
+
+    .report-item {
+        flex-wrap: wrap;
+        padding: 14px 18px;
+    }
+
+    /* Put actions on their own row */
     .report-action {
         width: 100%;
         padding-left: 52px;
+        justify-content: flex-end;
+    }
+
+    .download-button {
+        min-height: 44px;
+        padding: 0 16px;
+        font-size: 12px;
     }
 
     .statistics-grid {
@@ -942,6 +1060,7 @@ body {
     }
 }
 
+/* Ultra-small phones */
 @media (max-width: 450px) {
 
     .header-actions {
@@ -953,7 +1072,7 @@ body {
     }
 
     .hero-content {
-        padding: 19px;
+        padding: 18px;
     }
 
     .hero-text h1 {
@@ -964,15 +1083,58 @@ body {
         font-size: 12px;
     }
 
+    .hero-label {
+        font-size: 10px;
+    }
+
     .summary-card {
-        padding: 18px;
+        padding: 16px;
+    }
+
+    .summary-number {
+        font-size: 22px;
     }
 
     .chart-container {
-        height: 220px;
+        height: 200px;
     }
 
     .report-action {
         padding-left: 0;
+        justify-content: stretch;
+    }
+
+    .download-button {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .statistics-card {
+        padding: 18px;
+    }
+
+    .statistics-row span,
+    .statistics-row strong {
+        font-size: 11.5px;
+    }
+}
+
+/* 320px phones */
+@media (max-width: 360px) {
+
+    .nav-item span {
+        display: none;
+    }
+
+    .hero-text h1 {
+        font-size: 20px;
+    }
+
+    .summary-number {
+        font-size: 20px;
+    }
+
+    .chart-container {
+        height: 180px;
     }
 }
