@@ -15,6 +15,8 @@ a {
     text-decoration: none;
 }
 
+/* ============== TOP HEADER ============== */
+
 .top-header {
     position: sticky;
     top: 0;
@@ -49,6 +51,7 @@ a {
     align-items: center;
     justify-content: center;
     background: #08ad50;
+    flex-shrink: 0;
 }
 
 .brand-logo img {
@@ -168,6 +171,24 @@ a {
     background: #f33d4d;
 }
 
+.header-logout {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7a8495;
+    font-size: 20px;
+    border-radius: 50%;
+    transition: 0.2s ease;
+    text-decoration: none;
+}
+
+.header-logout:hover {
+    background: #fff1f2;
+    color: #dc2626;
+}
+
 .profile-menu {
     min-height: 44px;
     padding: 4px 11px 4px 6px;
@@ -189,6 +210,7 @@ a {
     justify-content: center;
     font-size: 12px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .profile-name {
@@ -200,18 +222,22 @@ a {
 .profile-name strong {
     color: #087b3c;
     font-size: 13px;
+    white-space: nowrap;
 }
 
 .profile-name span {
     margin-top: 2px;
     color: #8a96a7;
     font-size: 10px;
+    white-space: nowrap;
 }
 
 .profile-arrow {
     color: #07833f;
     font-size: 11px;
 }
+
+/* ============== PAGE ============== */
 
 .page {
     width: min(1400px, calc(100% - 50px));
@@ -294,6 +320,8 @@ a {
     font-size: 14px;
 }
 
+/* ============== SUMMARY ============== */
+
 .summary {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -362,6 +390,8 @@ a {
     opacity: 0.95;
 }
 
+/* ============== ISSUES LAYOUT ============== */
+
 .issues-layout {
     display: grid;
     grid-template-columns: 0.82fr 1.18fr;
@@ -411,7 +441,14 @@ a {
     background: #fff1f2;
     color: #b91c1c;
     font-size: 12px;
+    word-wrap: break-word;
 }
+
+.error-message i {
+    flex-shrink: 0;
+}
+
+/* ============== FORM ============== */
 
 .form-group {
     margin-bottom: 18px;
@@ -524,6 +561,8 @@ a {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    padding: 12px;
+    text-align: center;
 }
 
 .attachment-label i {
@@ -536,6 +575,8 @@ a {
     color: #667085;
     font-size: 13px;
     font-weight: 600;
+    word-break: break-all;
+    max-width: 100%;
 }
 
 .attachment-label span {
@@ -565,6 +606,8 @@ a {
 .submit-button:hover {
     background: #d9003d;
 }
+
+/* ============== ISSUE LIST ============== */
 
 .issue-list {
     display: flex;
@@ -596,6 +639,7 @@ a {
     align-items: center;
     gap: 7px;
     margin-bottom: 9px;
+    flex-wrap: wrap;
 }
 
 .reference {
@@ -634,6 +678,7 @@ a {
     border-radius: 15px;
     font-size: 10px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .priority-tag.low {
@@ -676,6 +721,7 @@ a {
     color: #8a96a7;
     font-size: 12px;
     line-height: 1.6;
+    word-wrap: break-word;
 }
 
 .issue-attachment {
@@ -734,6 +780,7 @@ a {
     align-items: center;
     justify-content: center;
     text-align: center;
+    padding: 20px;
 }
 
 .empty-state i {
@@ -753,6 +800,8 @@ a {
     font-size: 12px;
 }
 
+/* ============== ALL ISSUES PANEL (table) ============== */
+
 .all-issues-panel {
     margin-bottom: 30px;
 }
@@ -763,7 +812,9 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
     border-bottom: 1px solid #edf3f0;
+    flex-wrap: wrap;
 }
 
 .table-heading h2 {
@@ -784,6 +835,7 @@ a {
     color: #078b42;
     font-size: 13px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .view-button:hover {
@@ -793,6 +845,7 @@ a {
 .table-container {
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -813,6 +866,7 @@ th {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 td {
@@ -820,6 +874,7 @@ td {
     border-top: 1px solid #edf3f0;
     color: #667085;
     font-size: 12px;
+    white-space: nowrap;
 }
 
 td strong {
@@ -838,6 +893,7 @@ tbody tr:hover {
     margin-top: 4px;
     color: #98a2b3;
     line-height: 1.4;
+    white-space: normal;
 }
 
 .attachment-link {
@@ -860,153 +916,7 @@ tbody tr:hover {
     text-align: center;
 }
 
-@media (max-width: 1200px) {
-
-    .nav-container,
-    .page {
-        width: calc(100% - 30px);
-    }
-
-    .brand {
-        width: 145px;
-    }
-
-    .nav-item {
-        padding: 0 8px;
-        font-size: 13px;
-    }
-
-    .header-actions {
-        width: 180px;
-    }
-
-    .profile-name {
-        display: none;
-    }
-
-    .issues-layout {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 950px) {
-
-    .main-nav {
-        gap: 0;
-    }
-
-    .nav-item {
-        padding: 0 7px;
-    }
-
-    .nav-item:nth-child(4),
-    .nav-item:nth-child(5) {
-        display: none;
-    }
-
-    .summary {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 700px) {
-
-    .top-header {
-        height: 64px;
-    }
-
-    .nav-container {
-        width: calc(100% - 20px);
-    }
-
-    .brand {
-        width: auto;
-        flex: 1;
-    }
-
-    .brand-text {
-        display: none;
-    }
-
-    .main-nav {
-        display: none;
-    }
-
-    .header-actions {
-        width: auto;
-    }
-
-    .page {
-        width: calc(100% - 20px);
-        margin-top: 15px;
-    }
-
-    .hero {
-        height: 230px;
-        padding: 25px;
-        align-items: flex-end;
-    }
-
-    .hero h1 {
-        font-size: 27px;
-    }
-
-    .open-issues-badge {
-        top: 20px;
-        right: 20px;
-        bottom: auto;
-    }
-
-    .summary {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .summary-card {
-        min-height: 100px;
-    }
-
-    .report-panel,
-    .tracker-panel {
-        padding: 20px;
-    }
-
-    .priority-buttons {
-        grid-template-columns: 1fr;
-    }
-
-    .issue-top {
-        flex-direction: column;
-    }
-
-    .issue-date {
-        align-self: flex-start;
-    }
-
-    .table-heading {
-        align-items: flex-start;
-        gap: 15px;
-        flex-direction: column;
-        padding: 18px;
-    }
-
-    .header-logout {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #7a8495;
-    font-size: 20px;
-    border-radius: 50%;
-    transition: 0.2s ease;
-    text-decoration: none;
-}
-
-.header-logout:hover {
-    background: #fff1f2;
-    color: #dc2626;
-}
+/* ============== STATUS UPDATE FORM (manager only) ============== */
 
 .status-update-form {
     display: inline-block;
@@ -1018,7 +928,7 @@ tbody tr:hover {
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    height: 34px;
+    height: 38px;
     padding: 0 32px 0 12px;
     border: 1px solid transparent;
     border-radius: 10px;
@@ -1062,4 +972,278 @@ tbody tr:hover {
 .status-select:focus {
     box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
+
+/* ============== RESPONSIVE ============== */
+
+@media (max-width: 1200px) {
+
+    .nav-container,
+    .page {
+        width: calc(100% - 30px);
+    }
+
+    .brand {
+        width: 145px;
+    }
+
+    .nav-item {
+        padding: 0 8px;
+        font-size: 13px;
+    }
+
+    .header-actions {
+        width: 180px;
+    }
+
+    .profile-name {
+        display: none;
+    }
+
+    .issues-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 950px) {
+
+    .main-nav {
+        gap: 0;
+    }
+
+    .nav-item {
+        padding: 0 7px;
+    }
+
+    .nav-item span {
+        display: none;
+    }
+
+    .nav-item i {
+        font-size: 18px;
+    }
+
+    .summary {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Tablet & phone */
+@media (max-width: 700px) {
+
+    body {
+        font-size: 16px;
+    }
+
+    .top-header {
+        height: 64px;
+    }
+
+    .nav-container {
+        width: calc(100% - 20px);
+        padding: 0 10px;
+        gap: 8px;
+    }
+
+    .brand {
+        width: auto;
+        flex-shrink: 0;
+        min-width: 0;
+    }
+
+    .brand-text {
+        display: none;
+    }
+
+    /* Keep nav visible and scrollable */
+    .main-nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .main-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-item {
+        padding: 0 10px;
+        min-height: 38px;
+        flex-shrink: 0;
+    }
+
+    .nav-item span {
+        display: inline;
+        font-size: 12px;
+    }
+
+    .nav-item i {
+        font-size: 16px;
+    }
+
+    .header-actions {
+        width: auto;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .header-bell,
+    .header-logout {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .profile-menu {
+        padding: 4px 8px 4px 4px;
+        gap: 6px;
+    }
+
+    .profile-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+    }
+
+    .profile-name {
+        display: none;
+    }
+
+    .page {
+        width: calc(100% - 20px);
+        margin-top: 15px;
+    }
+
+    .hero {
+        height: 230px;
+        padding: 25px;
+        align-items: flex-end;
+        background-position: 25% center;
+    }
+
+    .hero h1 {
+        font-size: 27px;
+    }
+
+    .hero-label {
+        font-size: 11px;
+    }
+
+    .open-issues-badge {
+        top: 18px;
+        right: 18px;
+        bottom: auto;
+        min-height: 42px;
+        padding: 0 14px;
+    }
+
+    .open-issues-badge strong {
+        font-size: 12px;
+    }
+
+    .summary {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .summary-card {
+        min-height: 100px;
+        padding: 18px;
+    }
+
+    .summary-content strong {
+        font-size: 26px;
+    }
+
+    .report-panel,
+    .tracker-panel {
+        padding: 20px;
+    }
+
+    .priority-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .priority-button {
+        height: 48px;
+        font-size: 14px;
+    }
+
+    .form-group select,
+    .form-group textarea {
+        font-size: 15px;
+    }
+
+    .form-group select {
+        height: 50px;
+    }
+
+    .submit-button {
+        height: 52px;
+        font-size: 15px;
+    }
+
+    .issue-top {
+        flex-direction: column;
+    }
+
+    .issue-date {
+        align-self: flex-start;
+    }
+
+    .table-heading {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+        padding: 18px;
+    }
+
+    /* Bigger status dropdown on mobile */
+    .status-select {
+        height: 44px;
+        font-size: 13px;
+        padding: 0 34px 0 14px;
+    }
+}
+
+/* Ultra-small phones */
+@media (max-width: 400px) {
+
+    .nav-item span {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: 22px;
+    }
+
+    .hero-label {
+        font-size: 10px;
+    }
+
+    .summary-card {
+        padding: 16px;
+    }
+
+    .summary-content strong {
+        font-size: 24px;
+    }
+
+    .report-panel,
+    .tracker-panel {
+        padding: 16px;
+    }
+
+    .panel-heading h2 {
+        font-size: 16px;
+    }
+
+    .status-select {
+        height: 42px;
+        font-size: 12px;
+    }
 }
