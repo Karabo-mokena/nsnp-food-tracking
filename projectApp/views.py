@@ -136,22 +136,29 @@ def register_view(request):
         learners = request.POST.get('learners')
 
         if password != confirm_password:
-
             return render(request, 'projectApp/register.html', {
                 'error': 'Passwords do not match.'
             })
 
         if UserProfile.objects.filter(username=username).exists():
-
             return render(request, 'projectApp/register.html', {
                 'error': 'Username already exists.'
             })
 
         if UserProfile.objects.filter(email=email).exists():
-
             return render(request, 'projectApp/register.html', {
                 'error': 'Email already exists.'
             })
+
+        # Auto-approve the first manager so the system can bootstrap
+        is_first_manager = (
+            role in ['programme_manager', 'manager']
+            and not UserProfile.objects.filter(
+                role__in=['programme_manager', 'manager']
+            ).exists()
+        )
+
+        initial_status = 'Approved' if is_first_manager else 'Pending'
 
         new_user = UserProfile.objects.create(
             full_name=full_name.strip() if full_name else '',
@@ -162,8 +169,9 @@ def register_view(request):
             school=school.strip() if school else None,
             phone=phone.strip() if phone else None,
             learners=int(learners) if learners else None,
-            status='Pending'
+            status=initial_status
         )
+
         send_email_async(
             'NSNP Registration Received',
             f'''Hello {new_user.full_name},
@@ -185,7 +193,11 @@ NSNP Food Tracking System
             [new_user.email],
         )
 
-        
+        if is_first_manager:
+            return render(request, 'projectApp/login.html', {
+                'success': 'Welcome! You are the first manager — your account is now active. Please log in.'
+            })
+
         return render(request, 'projectApp/login.html', {
             'success': 'Registration submitted successfully. Your account is waiting for manager approval. A confirmation email has been sent.'
         })
