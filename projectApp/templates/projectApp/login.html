@@ -140,7 +140,7 @@
                     <div class="password-label">
                         <label for="password">Password</label>
 
-                        <button type="button" class="forgot-password">
+                        <button type="button" class="forgot-password" onclick="showForgotPasswordInfo()">
                             Forgot password?
                         </button>
                     </div>
@@ -181,6 +181,20 @@
             </form>
 
 
+            <!-- Forgot Password Info Panel (Option B) -->
+            <div id="forgot-password-info" class="forgot-password-info" style="display: none;">
+                <i class="bi bi-info-circle"></i>
+                <div>
+                    <strong>Password Reset</strong>
+                    <p>
+                        Please contact your Programme Manager to reset your password.
+                        You can reach them at
+                        <a href="mailto:nsnpfoodtracking@gmail.com">nsnpfoodtracking@gmail.com</a>.
+                    </p>
+                </div>
+            </div>
+
+
             <div class="register-link">
 
                 <p>
@@ -218,6 +232,15 @@ function togglePassword() {
     } else {
         password.type = "password";
         icon.className = "bi bi-eye";
+    }
+}
+
+function showForgotPasswordInfo() {
+    const info = document.getElementById('forgot-password-info');
+    if (info.style.display === 'none' || info.style.display === '') {
+        info.style.display = 'flex';
+    } else {
+        info.style.display = 'none';
     }
 }
 </script>

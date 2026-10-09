@@ -672,4 +672,78 @@ body {
     .security-notice p {
         font-size: 9.5px;
     }
+
+    /* ============== FORGOT PASSWORD INFO ============== */
+
+.forgot-password-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    margin-top: 18px;
+    border-radius: 11px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    animation: slideDown 0.25s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.forgot-password-info i {
+    color: #2563eb;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.forgot-password-info strong {
+    display: block;
+    color: #1e40af;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.forgot-password-info p {
+    color: #1e40af;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.forgot-password-info a {
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: underline;
+    word-break: break-word;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .forgot-password-info {
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .forgot-password-info i {
+        font-size: 16px;
+    }
+
+    .forgot-password-info strong {
+        font-size: 12px;
+    }
+
+    .forgot-password-info p {
+        font-size: 11.5px;
+    }
+}
 }
