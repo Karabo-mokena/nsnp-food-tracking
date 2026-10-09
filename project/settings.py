@@ -89,16 +89,6 @@ DATABASES = {
     )
 }
 
-import sys
-print(
-    f"DEBUG DATABASE_URL: {os.environ.get('DATABASE_URL')!r}",
-    file=sys.stderr,
-)
-print(
-    f"DEBUG DB ENGINE: {DATABASES['default'].get('ENGINE', 'unknown')}",
-    file=sys.stderr,
-)
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
