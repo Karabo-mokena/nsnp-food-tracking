@@ -38,26 +38,112 @@
 
         <nav class="main-nav">
 
-            <a href="{% if user.role == 'school_staff' %}{% url 'school_staff' %}{% elif user.role == 'programme_manager' or user.role == 'manager' %}{% url 'manager_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="nav-item">
-                <i class="bi bi-grid"></i>
-                <span>Overview</span>
-            </a>
-
             {% if user.role == 'programme_manager' or user.role == 'manager' %}
+
+                <a href="{% url 'manager_dashboard' %}" class="nav-item">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Overview</span>
+                </a>
+
+                <a href="{% url 'create_delivery' %}" class="nav-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>New Delivery</span>
+                </a>
+
                 <a href="{% url 'inventory' %}" class="nav-item">
                     <i class="bi bi-box-seam"></i>
                     <span>Inventory</span>
                 </a>
+
+                <a href="{% url 'report_issue' %}" class="nav-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Issues</span>
+                </a>
+
+                <a href="{% url 'reports' %}" class="nav-item">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reports</span>
+                </a>
+
+                <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                    {% if unread_count %}
+                        <span class="notification-count">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+
                 <a href="{% url 'user_management' %}" class="nav-item">
                     <i class="bi bi-people"></i>
                     <span>Users</span>
                 </a>
-            {% endif %}
 
-            <a href="{% url 'profile' %}" class="nav-item active">
-                <i class="bi bi-person-gear"></i>
-                <span>Profile</span>
-            </a>
+                <a href="{% url 'profile' %}" class="nav-item active">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </a>
+
+            {% elif user.role == 'school_staff' %}
+
+                <a href="{% url 'school_staff' %}" class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <span>Overview</span>
+                </a>
+
+                <a href="{% url 'inventory' %}" class="nav-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventory</span>
+                </a>
+
+                <a href="{% url 'report_issue' %}" class="nav-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Issues</span>
+                </a>
+
+                <a href="{% url 'reports' %}" class="nav-item">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reports</span>
+                </a>
+
+                <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                    {% if unread_count %}
+                        <span class="notification-count">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'profile' %}" class="nav-item active">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'dashboard' %}" class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    <span>Overview</span>
+                </a>
+
+                <a href="{% url 'report_issue' %}" class="nav-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Issues</span>
+                </a>
+
+                <a href="{% url 'notification' %}" class="nav-item notification-nav">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                    {% if unread_count %}
+                        <span class="notification-count">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'profile' %}" class="nav-item active">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </a>
+
+            {% endif %}
 
         </nav>
 
@@ -123,7 +209,6 @@
 
     <div class="profile-card">
 
-        <!-- Profile header -->
         <div class="profile-hero">
 
             <div class="profile-avatar">
@@ -170,7 +255,6 @@
         </div>
 
 
-        <!-- Tabs -->
         <div class="profile-tabs">
 
             <button type="button" class="profile-tab {% if active_tab != 'password' %}active{% endif %}" onclick="switchTab('info')">
@@ -186,7 +270,6 @@
         </div>
 
 
-        <!-- Profile info tab -->
         <div class="tab-content {% if active_tab != 'password' %}active{% endif %}" id="tab-info">
 
             {% if error %}
@@ -307,7 +390,6 @@
         </div>
 
 
-        <!-- Change password tab -->
         <div class="tab-content {% if active_tab == 'password' %}active{% endif %}" id="tab-password">
 
             {% if password_error %}
@@ -400,19 +482,16 @@
 
 function switchTab(tabName) {
 
-    // Tabs
     const tabs = document.querySelectorAll('.profile-tab');
     tabs.forEach(function (tab) {
         tab.classList.remove('active');
     });
 
-    // Content
     const contents = document.querySelectorAll('.tab-content');
     contents.forEach(function (content) {
         content.classList.remove('active');
     });
 
-    // Activate the chosen tab
     if (tabName === 'info') {
         tabs[0].classList.add('active');
         document.getElementById('tab-info').classList.add('active');
