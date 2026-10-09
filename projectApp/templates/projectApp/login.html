@@ -181,20 +181,6 @@
             </form>
 
 
-            <!-- Forgot Password Info Panel (Option B) -->
-            <div id="forgot-password-info" class="forgot-password-info" style="display: none;">
-                <i class="bi bi-info-circle"></i>
-                <div>
-                    <strong>Password Reset</strong>
-                    <p>
-                        Please contact your Programme Manager to reset your password.
-                        You can reach them at
-                        <a href="mailto:nsnpfoodtracking@gmail.com">nsnpfoodtracking@gmail.com</a>.
-                    </p>
-                </div>
-            </div>
-
-
             <div class="register-link">
 
                 <p>
@@ -221,6 +207,43 @@
 </div>
 
 
+<!-- ============== FORGOT PASSWORD MODAL ============== -->
+
+<div class="forgot-modal-overlay" id="forgotModal">
+    <div class="forgot-modal">
+
+        <div class="forgot-modal-header">
+            <div class="forgot-modal-icon">
+                <i class="bi bi-key-fill"></i>
+            </div>
+            <button type="button" class="forgot-modal-close" onclick="closeForgotPasswordInfo()" aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="forgot-modal-body">
+            <h3>Password Reset</h3>
+            <p>
+                Please contact your Programme Manager to reset your password.
+                They can assist you and provide a new password.
+            </p>
+
+            <a href="mailto:nsnpfoodtracking@gmail.com" class="forgot-modal-email">
+                <i class="bi bi-envelope-fill"></i>
+                <span>nsnpfoodtracking@gmail.com</span>
+            </a>
+        </div>
+
+        <div class="forgot-modal-footer">
+            <button type="button" class="forgot-modal-button" onclick="closeForgotPasswordInfo()">
+                Got it
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
 <script>
 function togglePassword() {
     const password = document.getElementById("password");
@@ -236,13 +259,35 @@ function togglePassword() {
 }
 
 function showForgotPasswordInfo() {
-    const info = document.getElementById('forgot-password-info');
-    if (info.style.display === 'none' || info.style.display === '') {
-        info.style.display = 'flex';
-    } else {
-        info.style.display = 'none';
-    }
+    const modal = document.getElementById('forgotModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
 }
+
+function closeForgotPasswordInfo() {
+    const modal = document.getElementById('forgotModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// Close modal when clicking outside the modal card
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('forgotModal');
+    if (modal) {
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                closeForgotPasswordInfo();
+            }
+        });
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeForgotPasswordInfo();
+        }
+    });
+});
 </script>
 
 </body>

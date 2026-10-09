@@ -673,77 +673,202 @@ body {
         font-size: 9.5px;
     }
 
-    /* ============== FORGOT PASSWORD INFO ============== */
+    /* ============== FORGOT PASSWORD MODAL ============== */
 
-.forgot-password-info {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 14px 16px;
-    margin-top: 18px;
-    border-radius: 11px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    animation: slideDown 0.25s ease;
+.forgot-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
-@keyframes slideDown {
+.forgot-modal-overlay.show {
+    display: flex;
+    animation: forgotFadeIn 0.25s ease;
+}
+
+@keyframes forgotFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.forgot-modal {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.22),
+        0 4px 14px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    animation: forgotSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes forgotSlideUp {
     from {
         opacity: 0;
-        transform: translateY(-8px);
+        transform: translateY(24px) scale(0.96);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
-.forgot-password-info i {
+.forgot-modal-header {
+    position: relative;
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.forgot-modal-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
     color: #2563eb;
-    font-size: 18px;
-    flex-shrink: 0;
-    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
 }
 
-.forgot-password-info strong {
-    display: block;
-    color: #1e40af;
-    font-size: 13px;
+.forgot-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.forgot-modal-close:hover {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.forgot-modal-body {
+    padding: 20px 28px 24px;
+    text-align: center;
+}
+
+.forgot-modal-body h3 {
+    margin-bottom: 10px;
+    color: #0f172a;
+    font-size: 20px;
     font-weight: 700;
-    margin-bottom: 4px;
 }
 
-.forgot-password-info p {
-    color: #1e40af;
-    font-size: 12.5px;
-    line-height: 1.5;
-    margin: 0;
+.forgot-modal-body p {
+    margin-bottom: 20px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
-.forgot-password-info a {
-    color: #2563eb;
+.forgot-modal-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    font-size: 14px;
     font-weight: 700;
-    text-decoration: underline;
+    text-decoration: none;
+    transition: 0.2s ease;
+    max-width: 100%;
     word-break: break-word;
+}
+
+.forgot-modal-email:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
+    color: #1e40af;
+}
+
+.forgot-modal-email i {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.forgot-modal-footer {
+    padding: 0 28px 24px;
+}
+
+.forgot-modal-button {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background: #16a34a;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.forgot-modal-button:hover {
+    background: #15803d;
 }
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
-    .forgot-password-info {
-        padding: 12px 14px;
-        gap: 10px;
+
+    .forgot-modal-overlay {
+        padding: 16px;
     }
 
-    .forgot-password-info i {
-        font-size: 16px;
+    .forgot-modal {
+        border-radius: 18px;
     }
 
-    .forgot-password-info strong {
-        font-size: 12px;
+    .forgot-modal-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
     }
 
-    .forgot-password-info p {
-        font-size: 11.5px;
+    .forgot-modal-body {
+        padding: 18px 22px 22px;
+    }
+
+    .forgot-modal-body h3 {
+        font-size: 18px;
+    }
+
+    .forgot-modal-body p {
+        font-size: 13px;
+    }
+
+    .forgot-modal-email {
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+
+    .forgot-modal-footer {
+        padding: 0 22px 22px;
     }
 }
+    
 }
