@@ -74,6 +74,11 @@
                     <span>Users</span>
                 </a>
 
+                <a href="{% url 'profile' %}" class="nav-item">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </a>
+
             {% elif user.role == 'school_staff' %}
 
                 <a href="{% url 'school_staff' %}" class="nav-item">
@@ -102,6 +107,11 @@
                     {% if unread_count %}
                         <span class="notification-count">{{ unread_count }}</span>
                     {% endif %}
+                </a>
+
+                <a href="{% url 'profile' %}" class="nav-item">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
                 </a>
 
             {% endif %}

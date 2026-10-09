@@ -6,13 +6,11 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Delivery Driver</title>
 
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -86,6 +84,11 @@
             User Management
         </a>
 
+        <a href="{% url 'profile' %}">
+            <span><i class="bi bi-person-circle"></i></span>
+            Profile
+        </a>
+
     </div>
 
     <div class="logout">
@@ -128,9 +131,9 @@
 
             </a>
 
-            <div class="profile">
+            <a href="{% url 'profile' %}" class="profile" title="My Profile">
                 {{ user.username|slice:":2"|upper }}
-            </div>
+            </a>
 
         </div>
 
