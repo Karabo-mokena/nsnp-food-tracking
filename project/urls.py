@@ -25,7 +25,8 @@ from projectApp.views import (
     delete_user_view,
     update_issue_status_view,
     update_delivery_status_view,
-    
+    profile_view,
+    change_password_view,
 )
 
 urlpatterns = [
@@ -38,7 +39,7 @@ urlpatterns = [
     path('school-staff/', school_staff_view, name='school_staff'),
     path('logout/', logout_view, name='logout'),
     path('report-issue/', report_issue_view, name='report_issue'),
-        path(
+    path(
         'issues/<int:issue_id>/update-status/',
         update_issue_status_view,
         name='update_issue_status'
@@ -53,22 +54,23 @@ urlpatterns = [
     path('inventory/edit/<int:inventory_id>/', edit_inventory_view, name='edit_inventory'),
     path('inventory/delete/<int:inventory_id>/', delete_inventory_view, name='delete_inventory'),
     path(
-    'user-management/approve/<int:user_id>/',
-    approve_user_view,
-    name='approve_user'
-),
-
-path(
-    'user-management/reject/<int:user_id>/',
-    reject_user_view,
-    name='reject_user'
-),
-path('deliveries/create/', create_delivery_view, name='create_delivery'),
+        'user-management/approve/<int:user_id>/',
+        approve_user_view,
+        name='approve_user'
+    ),
+    path(
+        'user-management/reject/<int:user_id>/',
+        reject_user_view,
+        name='reject_user'
+    ),
+    path('deliveries/create/', create_delivery_view, name='create_delivery'),
     path(
         'deliveries/<int:delivery_id>/update-status/',
         update_delivery_status_view,
         name='update_delivery_status'
     ),
+    path('profile/', profile_view, name='profile'),
+    path('profile/change-password/', change_password_view, name='change_password'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
