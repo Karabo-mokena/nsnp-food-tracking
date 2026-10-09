@@ -332,7 +332,7 @@ body {
     color: #16a34a;
 }
 
-/* ============== FORM INPUTS ============== */
+/* ============== FORM ROWS ============== */
 
 .form-row {
     display: grid;
@@ -378,6 +378,113 @@ body {
 .form-group input:focus {
     border-color: #22c55e;
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+/* ============== PASSWORD STRENGTH METER ============== */
+
+.password-field-wrap {
+    position: relative;
+}
+
+.strength-meter {
+    margin-top: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    animation: strengthFadeIn 0.25s ease;
+}
+
+@keyframes strengthFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.strength-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 10px;
+    background: #e5e7eb;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.35s ease, background 0.35s ease;
+}
+
+.strength-fill.weak   { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.strength-fill.fair   { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.strength-fill.good   { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+.strength-fill.strong { background: linear-gradient(90deg, #22c55e, #16a34a); }
+
+.strength-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.strength-label.weak   { color: #b91c1c; background: #fee2e2; }
+.strength-label.fair   { color: #b45309; background: #fef3c7; }
+.strength-label.good   { color: #1d4ed8; background: #dbeafe; }
+.strength-label.strong { color: #15803d; background: #dcfce7; }
+
+.strength-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 14px;
+}
+
+.strength-rules li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.strength-rules li i {
+    font-size: 13px;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.strength-rules li.rule-passed {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.strength-rules li.rule-passed i {
+    color: #16a34a;
+}
+
+.strength-rules li.rule-failed {
+    color: #94a3b8;
+}
+
+.strength-rules li.rule-failed i {
+    color: #cbd5e1;
 }
 
 /* ============== REGISTRATION NOTE ============== */
@@ -550,13 +657,11 @@ body {
 
 @media (max-width: 700px) {
 
-    /* Stack vertically */
     .register-page {
         display: block;
         min-height: auto;
     }
 
-    /* Smaller, more flexible image header */
     .register-image-panel {
         width: 100%;
         min-width: 0;
@@ -609,7 +714,6 @@ body {
         font-size: 12px;
     }
 
-    /* Form panel */
     .register-form-panel {
         padding: 28px 20px 40px;
     }
@@ -630,7 +734,6 @@ body {
         font-size: 13px;
     }
 
-    /* Forms stack to 1 column */
     .form-row {
         grid-template-columns: 1fr;
         gap: 0;
@@ -641,7 +744,6 @@ body {
         margin-bottom: 18px;
     }
 
-    /* Bigger touch targets */
     .form-group input {
         height: 50px;
         font-size: 15px;
@@ -768,9 +870,18 @@ body {
     .register-footer span:first-child::after {
         display: none;
     }
+
+    /* Password meter mobile */
+    .strength-rules {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .strength-rules li {
+        font-size: 11.5px;
+    }
 }
 
-/* Ultra-small phones (320px) */
 @media (max-width: 360px) {
 
     .register-image-panel {
@@ -803,113 +914,4 @@ body {
         height: 34px;
         font-size: 15px;
     }
-
-    /* ============== PASSWORD STRENGTH METER ============== */
-
-.password-field-wrap {
-    position: relative;
-}
-
-.strength-meter {
-    margin-top: 10px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    animation: strengthFadeIn 0.2s ease;
-}
-
-@keyframes strengthFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-4px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.strength-bar {
-    width: 100%;
-    height: 6px;
-    border-radius: 10px;
-    background: #e5e7eb;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
-
-.strength-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 10px;
-    transition: width 0.3s ease, background 0.3s ease;
-}
-
-.strength-fill.weak   { background: #ef4444; }
-.strength-fill.fair   { background: #f59e0b; }
-.strength-fill.good   { background: #3b82f6; }
-.strength-fill.strong { background: #22c55e; }
-
-.strength-label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-}
-
-.strength-label.weak   { color: #ef4444; }
-.strength-label.fair   { color: #f59e0b; }
-.strength-label.good   { color: #3b82f6; }
-.strength-label.strong { color: #22c55e; }
-
-.strength-rules {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-}
-
-.strength-rules li {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #94a3b8;
-    font-size: 11px;
-    transition: color 0.2s ease;
-}
-
-.strength-rules li i {
-    font-size: 11px;
-    transition: color 0.2s ease;
-}
-
-.strength-rules li.rule-passed {
-    color: #16a34a;
-}
-
-.strength-rules li.rule-passed i {
-    color: #16a34a;
-}
-
-.strength-rules li.rule-failed {
-    color: #94a3b8;
-}
-
-/* Mobile adjustments */
-@media (max-width: 480px) {
-
-    .strength-rules {
-        grid-template-columns: 1fr;
-        gap: 4px;
-    }
-
-    .strength-rules li {
-        font-size: 11.5px;
-    }
-}
 }
