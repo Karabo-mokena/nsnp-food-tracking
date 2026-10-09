@@ -761,6 +761,120 @@ def logout_view(request):
     return redirect('/')
 
 
+# ============== PROFILE VIEWS ==============
+
+def profile_view(request):
+
+    user = get_logged_in_user(request)
+
+    if not user:
+        return redirect('/')
+
+    if request.method == 'POST':
+
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        school = request.POST.get('school', '').strip()
+
+        error = None
+
+        if not full_name:
+            error = 'Full name cannot be empty.'
+        elif not email:
+            error = 'Email cannot be empty.'
+        elif UserProfile.objects.filter(email=email).exclude(id=user.id).exists():
+            error = 'That email is already in use by another account.'
+
+        if error:
+            return render(request, 'projectApp/profile.html', {
+                'user': user,
+                'error': error,
+                'unread_count': Notification.objects.filter(
+                    user=user, is_read=False
+                ).count(),
+            })
+
+        user.full_name = full_name
+        user.email = email
+        user.phone = phone if phone else None
+
+        if user.role == 'school_staff':
+            user.school = school if school else None
+
+        user.save()
+
+        return render(request, 'projectApp/profile.html', {
+            'user': user,
+            'success': 'Profile updated successfully.',
+            'unread_count': Notification.objects.filter(
+                user=user, is_read=False
+            ).count(),
+        })
+
+    unread_count = Notification.objects.filter(
+        user=user, is_read=False
+    ).count()
+
+    return render(request, 'projectApp/profile.html', {
+        'user': user,
+        'unread_count': unread_count,
+    })
+
+
+def change_password_view(request):
+
+    user = get_logged_in_user(request)
+
+    if not user:
+        return redirect('/')
+
+    if request.method == 'POST':
+
+        current = request.POST.get('current_password', '')
+        new_password = request.POST.get('new_password', '')
+        confirm = request.POST.get('confirm_password', '')
+
+        error = None
+
+        if not check_password(current, user.password):
+            error = 'Current password is incorrect.'
+        elif new_password != confirm:
+            error = 'New passwords do not match.'
+        elif len(new_password) < 8:
+            error = 'New password must be at least 8 characters.'
+        elif not any(c.isupper() for c in new_password):
+            error = 'New password must contain at least 1 uppercase letter.'
+        elif not any(c.islower() for c in new_password):
+            error = 'New password must contain at least 1 lowercase letter.'
+        elif not any(c.isdigit() for c in new_password):
+            error = 'New password must contain at least 1 number.'
+
+        if error:
+            return render(request, 'projectApp/profile.html', {
+                'user': user,
+                'password_error': error,
+                'active_tab': 'password',
+                'unread_count': Notification.objects.filter(
+                    user=user, is_read=False
+                ).count(),
+            })
+
+        user.password = make_password(new_password)
+        user.save()
+
+        return render(request, 'projectApp/profile.html', {
+            'user': user,
+            'password_success': 'Password changed successfully.',
+            'active_tab': 'password',
+            'unread_count': Notification.objects.filter(
+                user=user, is_read=False
+            ).count(),
+        })
+
+    return redirect('/profile/')
+
+
 def create_delivery_view(request):
 
     user = get_logged_in_user(request)
