@@ -334,7 +334,7 @@
 
                     <div class="form-row">
 
-                        <div class="form-group">
+                        <div class="form-group password-field-wrap">
 
                             <label for="password">
                                 Password <span>*</span>
@@ -346,7 +346,23 @@
                                 name="password"
                                 placeholder="Minimum 8 characters"
                                 required
+                                oninput="checkPasswordStrength()"
                             >
+
+                            <!-- Password Strength Meter -->
+                            <div class="strength-meter" id="strengthMeter" style="display: none;">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <span class="strength-label" id="strengthLabel">Enter a password</span>
+
+                                <ul class="strength-rules" id="strengthRules">
+                                    <li data-rule="length"><i class="bi bi-circle"></i> At least 8 characters</li>
+                                    <li data-rule="upper"><i class="bi bi-circle"></i> At least 1 uppercase letter</li>
+                                    <li data-rule="lower"><i class="bi bi-circle"></i> At least 1 lowercase letter</li>
+                                    <li data-rule="number"><i class="bi bi-circle"></i> At least 1 number</li>
+                                </ul>
+                            </div>
 
                         </div>
 
@@ -467,6 +483,78 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleSchoolField();
 
 });
+
+
+function checkPasswordStrength() {
+
+    const password = document.getElementById('password').value;
+    const meter = document.getElementById('strengthMeter');
+    const fill = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    const rules = document.getElementById('strengthRules');
+
+    // Show meter as soon as user types
+    if (password.length === 0) {
+        meter.style.display = 'none';
+        return;
+    }
+    meter.style.display = 'block';
+
+    // Check rules
+    const hasLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+
+    const rulesMap = {
+        'length': hasLength,
+        'upper': hasUpper,
+        'lower': hasLower,
+        'number': hasNumber
+    };
+
+    // Update each rule's icon and color
+    rules.querySelectorAll('li').forEach(function (li) {
+        const rule = li.getAttribute('data-rule');
+        const passed = rulesMap[rule];
+        const icon = li.querySelector('i');
+
+        if (passed) {
+            li.classList.add('rule-passed');
+            li.classList.remove('rule-failed');
+            icon.className = 'bi bi-check-circle-fill';
+        } else {
+            li.classList.add('rule-failed');
+            li.classList.remove('rule-passed');
+            icon.className = 'bi bi-circle';
+        }
+    });
+
+    // Calculate strength score (0-4)
+    const score = [hasLength, hasUpper, hasLower, hasNumber].filter(Boolean).length;
+
+    // Update fill width and color
+    fill.style.width = (score / 4 * 100) + '%';
+    fill.className = 'strength-fill';
+
+    if (score <= 1) {
+        fill.classList.add('weak');
+        label.textContent = 'Weak';
+        label.className = 'strength-label weak';
+    } else if (score === 2) {
+        fill.classList.add('fair');
+        label.textContent = 'Fair';
+        label.className = 'strength-label fair';
+    } else if (score === 3) {
+        fill.classList.add('good');
+        label.textContent = 'Good';
+        label.className = 'strength-label good';
+    } else {
+        fill.classList.add('strong');
+        label.textContent = 'Strong';
+        label.className = 'strength-label strong';
+    }
+}
 
 </script>
 

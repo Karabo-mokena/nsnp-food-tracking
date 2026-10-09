@@ -803,4 +803,113 @@ body {
         height: 34px;
         font-size: 15px;
     }
+
+    /* ============== PASSWORD STRENGTH METER ============== */
+
+.password-field-wrap {
+    position: relative;
+}
+
+.strength-meter {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    animation: strengthFadeIn 0.2s ease;
+}
+
+@keyframes strengthFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.strength-bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 10px;
+    background: #e5e7eb;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.strength-fill.weak   { background: #ef4444; }
+.strength-fill.fair   { background: #f59e0b; }
+.strength-fill.good   { background: #3b82f6; }
+.strength-fill.strong { background: #22c55e; }
+
+.strength-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.strength-label.weak   { color: #ef4444; }
+.strength-label.fair   { color: #f59e0b; }
+.strength-label.good   { color: #3b82f6; }
+.strength-label.strong { color: #22c55e; }
+
+.strength-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.strength-rules li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #94a3b8;
+    font-size: 11px;
+    transition: color 0.2s ease;
+}
+
+.strength-rules li i {
+    font-size: 11px;
+    transition: color 0.2s ease;
+}
+
+.strength-rules li.rule-passed {
+    color: #16a34a;
+}
+
+.strength-rules li.rule-passed i {
+    color: #16a34a;
+}
+
+.strength-rules li.rule-failed {
+    color: #94a3b8;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+
+    .strength-rules {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .strength-rules li {
+        font-size: 11.5px;
+    }
+}
 }

@@ -140,6 +140,22 @@ def register_view(request):
                 'error': 'Passwords do not match.'
             })
 
+        # Password strength validation
+        password_errors = []
+        if len(password) < 8:
+            password_errors.append('at least 8 characters')
+        if not any(c.isupper() for c in password):
+            password_errors.append('at least 1 uppercase letter')
+        if not any(c.islower() for c in password):
+            password_errors.append('at least 1 lowercase letter')
+        if not any(c.isdigit() for c in password):
+            password_errors.append('at least 1 number')
+
+        if password_errors:
+            return render(request, 'projectApp/register.html', {
+                'error': 'Password must contain ' + ', '.join(password_errors) + '.'
+            })
+
         if UserProfile.objects.filter(username=username).exists():
             return render(request, 'projectApp/register.html', {
                 'error': 'Username already exists.'
