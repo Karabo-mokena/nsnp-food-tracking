@@ -304,11 +304,9 @@
                     <label for="school">Delivery Stop</label>
                     <select id="school" name="school" required>
                         <option value="">Select delivery stop...</option>
-                        <option value="Greenfield Primary School">Greenfield Primary School</option>
-                        <option value="Riverside Secondary School">Riverside Secondary School</option>
-                        <option value="Mountain View Academy">Mountain View Academy</option>
-                        <option value="Valley High School">Valley High School</option>
-                        <option value="Lakeside Elementary">Lakeside Elementary</option>
+                        {% for school in schools %}
+                            <option value="{{ school }}">{{ school }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
