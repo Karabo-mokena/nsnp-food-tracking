@@ -188,27 +188,20 @@ def register_view(request):
             status=initial_status
         )
 
-        # Email sending disabled — Render free tier blocks SMTP
-        # send_email_async(
-        #     'NSNP Registration Received',
-        #     f'''Hello {new_user.full_name},
-        #
-        # Thank you for registering for the National School Nutrition Programme Food Tracking System.
-        #
-        # We have received your registration request.
-        #
-        # Your account is now pending review by a programme manager. You will receive a follow-up email once your request has been approved or declined.
-        #
-        # If you have any questions in the meantime, please contact your programme administrator.
-        #
-        # Thank you for your interest.
-        #
-        # Kind regards,
-        # NSNP Food Tracking System
-        # ''',
-        #     'nsnpfoodtracking@gmail.com',
-        #     [new_user.email],
-        # )
+        # Notify managers about the new registration
+        if not is_first_manager:
+
+            managers = UserProfile.objects.filter(
+                role__in=['programme_manager', 'manager'],
+                status='Approved'
+            )
+
+            for manager in managers:
+                Notification.objects.create(
+                    user=manager,
+                    message=f'New registration request: {full_name} ({role.replace("_", " ").title()}). Awaiting approval.',
+                    notification_type='system'
+                )
 
         if is_first_manager:
             return render(request, 'projectApp/login.html', {
@@ -243,40 +236,6 @@ def approve_user_view(request, user_id):
         account.status = 'Approved'
         account.save()
 
-        # Email sending disabled — Render free tier blocks SMTP
-        # send_mail(
-        #     'NSNP Account Approved — You Can Now Sign In',
-        #     f'''Hello {account.full_name},
-        #
-        # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        #   NSNP FOOD TRACKING SYSTEM
-        #   Account Approved
-        # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        #
-        # Great news! Your registration for the National School Nutrition Programme Food Tracking System has been approved.
-        #
-        # ► Your Access Details
-        #   Username: {account.username}
-        #   Role: {account.role.replace("_", " ").title()}
-        #
-        # ► Next Steps
-        #   1. Visit the login page: http://127.0.0.1:8000/
-        #   2. Sign in with your username and password.
-        #   3. You will be taken to your role-specific dashboard.
-        #
-        # If you have any questions, please contact your programme administrator.
-        #
-        # Welcome aboard!
-        #
-        # Kind regards,
-        # NSNP Food Tracking System
-        # Department of Basic Education · South Africa
-        # ''',
-        #     'nsnpfoodtracking@gmail.com',
-        #     [account.email],
-        #     fail_silently=True
-        # )
-
     return redirect('/user-management/')
 
 
@@ -300,22 +259,6 @@ def reject_user_view(request, user_id):
 
         account.status = 'Rejected'
         account.save()
-
-        # Email sending disabled — Render free tier blocks SMTP
-        # send_mail(
-        #     'NSNP Registration Update',
-        #     f'''Hello {account.full_name},
-        #
-        # Thank you for registering for the National School Nutrition Programme Food Tracking System.
-        #
-        # Your registration request has not been approved at this time.
-        #
-        # Thank you.
-        # ''',
-        #     'nsnpfoodtracking@gmail.com',
-        #     [account.email],
-        #     fail_silently=True
-        # )
 
     return redirect('/user-management/')
 
@@ -395,6 +338,19 @@ def dashboard_view(request):
                         message=f'Delivery to {school} logged successfully.',
                         notification_type='delivery'
                     )
+
+                    # Notify managers about the new delivery logged by driver
+                    managers = UserProfile.objects.filter(
+                        role__in=['programme_manager', 'manager'],
+                        status='Approved'
+                    )
+
+                    for manager in managers:
+                        Notification.objects.create(
+                            user=manager,
+                            message=f'{user.full_name} logged a new delivery: {quantity} x {food_item} to {school}.',
+                            notification_type='delivery'
+                        )
 
                     return redirect('/dashboard/')
 
@@ -485,6 +441,19 @@ def update_delivery_status_view(request, delivery_id):
                 )
 
             check_and_alert_low_stock(inventory_item, clean_school_name)
+
+        # Notify managers about the status change
+        managers = UserProfile.objects.filter(
+            role__in=['programme_manager', 'manager'],
+            status='Approved'
+        )
+
+        for manager in managers:
+            Notification.objects.create(
+                user=manager,
+                message=f'Delivery {new_status.lower()} by {user.full_name}: {delivery.quantity} x {delivery.food_item} to {delivery.school}.',
+                notification_type='delivery'
+            )
 
         clean_school = delivery.school.strip().lower()
 
@@ -1274,11 +1243,25 @@ def report_issue_view(request):
             status='Open'
         )
 
+        # Notify the reporter that their issue was submitted
         Notification.objects.create(
             user=user,
             message=f'Issue report {issue.id} has been submitted.',
             notification_type='system'
         )
+
+        # Notify all managers about the new issue
+        managers = UserProfile.objects.filter(
+            role__in=['programme_manager', 'manager'],
+            status='Approved'
+        )
+
+        for manager in managers:
+            Notification.objects.create(
+                user=manager,
+                message=f'New {priority} priority issue reported by {user.full_name}: "{issue_type}" at {delivery.school}.',
+                notification_type='issue'
+            )
 
         return redirect('/report-issue/')
 
