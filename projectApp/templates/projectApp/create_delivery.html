@@ -186,13 +186,12 @@
                     </label>
                     <div class="input-wrapper">
                         <i class="bi bi-buildings"></i>
-                        <input
-                            type="text"
-                            id="school"
-                            name="school"
-                            placeholder="e.g. Greenfield Primary School"
-                            required
-                        >
+                        <select id="school" name="school" required>
+                            <option value="">Select a school...</option>
+                            {% for school in schools %}
+                                <option value="{{ school }}">{{ school }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
 
@@ -204,11 +203,9 @@
                         <i class="bi bi-geo-alt"></i>
                         <select id="district" name="district" required>
                             <option value="">Select district...</option>
-                            <option value="Capricorn">Capricorn</option>
-                            <option value="Waterberg">Waterberg</option>
-                            <option value="Mopani">Mopani</option>
-                            <option value="Sekhukhune">Sekhukhune</option>
-                            <option value="Vhembe">Vhembe</option>
+                            {% for district in districts %}
+                                <option value="{{ district }}">{{ district }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
