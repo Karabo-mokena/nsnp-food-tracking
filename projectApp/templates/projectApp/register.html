@@ -315,12 +315,12 @@
                                 School / Institution <span>*</span>
                             </label>
 
-                            <input
-                                type="text"
-                                id="school"
-                                name="school"
-                                placeholder="e.g. Greenfield Primary School"
-                            >
+                            <select id="school" name="school">
+                                <option value="">Select your school...</option>
+                                {% for school in schools %}
+                                    <option value="{{ school }}">{{ school }}</option>
+                                {% endfor %}
+                            </select>
 
                         </div>
 
@@ -493,14 +493,12 @@ function checkPasswordStrength() {
     const label = document.getElementById('strengthLabel');
     const rules = document.getElementById('strengthRules');
 
-    // Show meter as soon as user types
     if (password.length === 0) {
         meter.style.display = 'none';
         return;
     }
     meter.style.display = 'block';
 
-    // Check rules
     const hasLength = password.length >= 8;
     const hasUpper = /[A-Z]/.test(password);
     const hasLower = /[a-z]/.test(password);
@@ -513,7 +511,6 @@ function checkPasswordStrength() {
         'number': hasNumber
     };
 
-    // Update each rule's icon and color
     rules.querySelectorAll('li').forEach(function (li) {
         const rule = li.getAttribute('data-rule');
         const passed = rulesMap[rule];
@@ -530,10 +527,8 @@ function checkPasswordStrength() {
         }
     });
 
-    // Calculate strength score (0-4)
     const score = [hasLength, hasUpper, hasLower, hasNumber].filter(Boolean).length;
 
-    // Update fill width and color
     fill.style.width = (score / 4 * 100) + '%';
     fill.className = 'strength-fill';
 
