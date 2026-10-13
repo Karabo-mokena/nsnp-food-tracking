@@ -196,7 +196,12 @@
                 <label for="school">School</label>
                 <div class="input-wrapper">
                     <i class="bi bi-buildings"></i>
-                    <input type="text" id="school" name="school" value="{{ account.school|default:'' }}" placeholder="e.g. Greenfield Primary School">
+                    <select id="school" name="school">
+                        <option value="">Select a school...</option>
+                        {% for school in schools %}
+                            <option value="{{ school }}" {% if account.school == school %}selected{% endif %}>{{ school }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
