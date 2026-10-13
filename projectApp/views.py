@@ -1422,11 +1422,28 @@ def reports_view(request):
     if user.role not in ['school_staff', 'programme_manager', 'manager']:
         return redirect('/dashboard/')
 
-    deliveries = Delivery.objects.all().order_by('-delivery_date', '-id')
+    # D-1 companion: school staff only see their own school's reports
+    if user.role == 'school_staff' and user.school:
 
-    issues = Issue.objects.all().order_by('-created_at')
+        school = user.school.strip()
 
-    inventory = Inventory.objects.all().order_by('food_item')
+        deliveries = Delivery.objects.filter(
+            school__iexact=school
+        ).order_by('-delivery_date', '-id')
+
+        issues = Issue.objects.filter(
+            delivery__school__iexact=school
+        ).order_by('-created_at')
+
+        inventory = Inventory.objects.filter(
+            school__iexact=school
+        ).order_by('food_item')
+
+    else:
+
+        deliveries = Delivery.objects.all().order_by('-delivery_date', '-id')
+        issues = Issue.objects.all().order_by('-created_at')
+        inventory = Inventory.objects.all().order_by('food_item')
 
     total_deliveries = deliveries.count()
 
@@ -1562,6 +1579,10 @@ def download_report_view(request):
     if not user:
         return redirect('/')
 
+    # D-1 fix: only staff and managers can download reports
+    if user.role not in ['school_staff', 'programme_manager', 'manager']:
+        return redirect('/dashboard/')
+
     report_type = request.GET.get('report_type', 'delivery')
     report_format = request.GET.get('format', 'PDF')
 
@@ -1588,9 +1609,28 @@ def download_report_view(request):
         date_from = (today - timedelta(days=90)).strftime('%Y-%m-%d')
         date_to = today.strftime('%Y-%m-%d')
 
-    deliveries = Delivery.objects.all().order_by('-delivery_date', '-id')
-    issues = Issue.objects.all().order_by('-created_at')
-    inventory = Inventory.objects.all().order_by('food_item')
+    # D-1 fix: school staff only see their own school's data
+    if user.role == 'school_staff' and user.school:
+
+        school = user.school.strip()
+
+        deliveries = Delivery.objects.filter(
+            school__iexact=school
+        ).order_by('-delivery_date', '-id')
+
+        issues = Issue.objects.filter(
+            delivery__school__iexact=school
+        ).order_by('-created_at')
+
+        inventory = Inventory.objects.filter(
+            school__iexact=school
+        ).order_by('food_item')
+
+    else:
+
+        deliveries = Delivery.objects.all().order_by('-delivery_date', '-id')
+        issues = Issue.objects.all().order_by('-created_at')
+        inventory = Inventory.objects.all().order_by('food_item')
 
     if date_from:
         try:
@@ -2059,7 +2099,13 @@ def inventory_view(request):
 
             error_message = 'Please enter valid quantities.'
 
-    inventory = Inventory.objects.all().order_by('food_item')
+    # D-1 companion: school staff only see their own school's inventory
+    if user.role == 'school_staff' and user.school:
+        inventory = Inventory.objects.filter(
+            school__iexact=user.school.strip()
+        ).order_by('food_item')
+    else:
+        inventory = Inventory.objects.all().order_by('food_item')
 
     inventory_data = []
 
@@ -2183,6 +2229,11 @@ def edit_inventory_view(request, inventory_id):
     except Inventory.DoesNotExist:
         return redirect('/inventory/')
 
+    # D-1 companion: school staff can only edit their own school's inventory
+    if user.role == 'school_staff' and user.school:
+        if inventory.school.strip().lower() != user.school.strip().lower():
+            return redirect('/inventory/')
+
     if request.method == 'POST':
 
         school = request.POST.get('school')
@@ -2264,6 +2315,11 @@ def delete_inventory_view(request, inventory_id):
     try:
 
         inventory = Inventory.objects.get(id=inventory_id)
+
+        # D-1 companion: school staff can only delete their own school's inventory
+        if user.role == 'school_staff' and user.school:
+            if inventory.school.strip().lower() != user.school.strip().lower():
+                return redirect('/inventory/')
 
         if request.method == 'POST':
             inventory.delete()
