@@ -17,6 +17,26 @@ from .models import UserProfile, Delivery, Issue, Notification, Inventory
 logger = logging.getLogger(__name__)
 
 
+# ============== SCHOOLS AND DISTRICTS MASTER LISTS ==============
+
+SCHOOLS = [
+    'Windmill Park High',
+    'Greenfield Primary School',
+    'Riverside Secondary School',
+    'Mountain View Academy',
+    'Valley High School',
+    'Lakeside Elementary',
+]
+
+DISTRICTS = [
+    'Capricorn',
+    'Waterberg',
+    'Mopani',
+    'Sekhukhune',
+    'Vhembe',
+]
+
+
 def get_logged_in_user(request):
 
     user_id = request.session.get('user_id')
@@ -137,7 +157,8 @@ def register_view(request):
 
         if password != confirm_password:
             return render(request, 'projectApp/register.html', {
-                'error': 'Passwords do not match.'
+                'error': 'Passwords do not match.',
+                'schools': SCHOOLS,
             })
 
         # Password strength validation
@@ -153,17 +174,27 @@ def register_view(request):
 
         if password_errors:
             return render(request, 'projectApp/register.html', {
-                'error': 'Password must contain ' + ', '.join(password_errors) + '.'
+                'error': 'Password must contain ' + ', '.join(password_errors) + '.',
+                'schools': SCHOOLS,
+            })
+
+        # If registering as school staff, the school must be in the approved list
+        if role == 'school_staff' and school not in SCHOOLS:
+            return render(request, 'projectApp/register.html', {
+                'error': 'Please select a valid school from the list.',
+                'schools': SCHOOLS,
             })
 
         if UserProfile.objects.filter(username=username).exists():
             return render(request, 'projectApp/register.html', {
-                'error': 'Username already exists.'
+                'error': 'Username already exists.',
+                'schools': SCHOOLS,
             })
 
         if UserProfile.objects.filter(email=email).exists():
             return render(request, 'projectApp/register.html', {
-                'error': 'Email already exists.'
+                'error': 'Email already exists.',
+                'schools': SCHOOLS,
             })
 
         # Auto-approve the first manager so the system can bootstrap
@@ -212,7 +243,9 @@ def register_view(request):
             'success': 'Registration submitted successfully. Your account is waiting for manager approval.'
         })
 
-    return render(request, 'projectApp/register.html')
+    return render(request, 'projectApp/register.html', {
+        'schools': SCHOOLS,
+    })
 
 
 def approve_user_view(request, user_id):
@@ -369,6 +402,7 @@ def dashboard_view(request):
             'next_delivery': next_delivery,
             'issues': issues,
             'unread_notifications': unread_notifications,
+            'schools': SCHOOLS,
             'error': 'Please complete all delivery fields with valid values.'
         })
 
@@ -383,7 +417,8 @@ def dashboard_view(request):
         'completion_percentage': completion_percentage,
         'next_delivery': next_delivery,
         'issues': issues,
-        'unread_notifications': unread_notifications
+        'unread_notifications': unread_notifications,
+        'schools': SCHOOLS,
     })
 
 
@@ -656,11 +691,9 @@ def manager_dashboard_view(request):
         })
 
 
-    DISTRICT_NAMES = ['Capricorn', 'Waterberg', 'Mopani', 'Sekhukhune', 'Vhembe']
-
     district_compliance_data = []
 
-    for district_name in DISTRICT_NAMES:
+    for district_name in DISTRICTS:
 
         district_deliveries = deliveries.filter(district__iexact=district_name)
 
@@ -943,7 +976,9 @@ def create_delivery_view(request):
             'drivers': drivers,
             'recent_deliveries': recent_deliveries,
             'unread_count': unread_count,
-            'error': error_message
+            'error': error_message,
+            'schools': SCHOOLS,
+            'districts': DISTRICTS,
         }
     )
 
@@ -965,7 +1000,31 @@ def school_staff_view(request):
 
         return redirect('/')
 
-    school_name = (user.school or 'Greenfield Primary School').strip()
+    school_name = (user.school or '').strip()
+
+    if not school_name:
+        return render(request, 'projectApp/school_staff.html', {
+            'user': user,
+            'today': timezone.localdate(),
+            'school_name': 'No school assigned',
+            'total_deliveries': 0,
+            'pending_count': 0,
+            'completed_count': 0,
+            'total_inventory': 0,
+            'weekly_usage_total': 0,
+            'low_stock': [],
+            'pending_deliveries': [],
+            'inventory': [],
+            'latest_inventory': None,
+            'unread_count': 0,
+            'issues': [],
+            'week_start': timezone.localdate(),
+            'week_end': timezone.localdate(),
+            'daily_usage': [],
+            'maximum_usage': 1,
+            'learners_fed': 0,
+        })
+
     today = timezone.localdate()
 
     if request.method == 'POST':
@@ -1243,14 +1302,12 @@ def report_issue_view(request):
             status='Open'
         )
 
-        # Notify the reporter that their issue was submitted
         Notification.objects.create(
             user=user,
             message=f'Issue report {issue.id} has been submitted.',
             notification_type='system'
         )
 
-        # Notify all managers about the new issue
         managers = UserProfile.objects.filter(
             role__in=['programme_manager', 'manager'],
             status='Approved'
@@ -2104,7 +2161,8 @@ def inventory_view(request):
             'low_stock_items': low_stock_items,
             'critical_items': critical_items,
             'unread_count': unread_count,
-            'error': error_message
+            'error': error_message,
+            'schools': SCHOOLS,
         }
     )
 
@@ -2148,7 +2206,8 @@ def edit_inventory_view(request, inventory_id):
                 {
                     'user': user,
                     'inventory': inventory,
-                    'error': 'Please enter valid quantities.'
+                    'error': 'Please enter valid quantities.',
+                    'schools': SCHOOLS,
                 }
             )
 
@@ -2160,7 +2219,8 @@ def edit_inventory_view(request, inventory_id):
                 {
                     'user': user,
                     'inventory': inventory,
-                    'error': 'Quantities cannot be negative.'
+                    'error': 'Quantities cannot be negative.',
+                    'schools': SCHOOLS,
                 }
             )
 
@@ -2185,7 +2245,8 @@ def edit_inventory_view(request, inventory_id):
         'projectApp/edit_inventory.html',
         {
             'user': user,
-            'inventory': inventory
+            'inventory': inventory,
+            'schools': SCHOOLS,
         }
     )
 
@@ -2250,7 +2311,8 @@ def edit_user_view(request, user_id):
         'projectApp/edit_user.html',
         {
             'user': user,
-            'account': account
+            'account': account,
+            'schools': SCHOOLS,
         }
     )
 
