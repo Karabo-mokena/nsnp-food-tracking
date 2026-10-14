@@ -16,7 +16,7 @@ class UserProfile(models.Model):
 
 class Delivery(models.Model):
     school = models.CharField(max_length=200)
-    district = models.CharField(max_length=100, default='Capricorn')   # 👈 ADD THIS
+    district = models.CharField(max_length=100, default='Capricorn')  
     food_item = models.CharField(max_length=200)
     quantity = models.PositiveIntegerField()
     delivery_date = models.DateField()
